@@ -1,6 +1,6 @@
 FROM public.ecr.aws/lambda/nodejs:18-x86_64
 
-RUN yum install cups-libs dbus-glib libXrandr libXcursor libXinerama cairo cairo-gobject pango
+RUN yum -y install cups-libs dbus-glib libXrandr libXcursor libXinerama cairo cairo-gobject pango
 
 RUN rpm -ivh --nodeps http://mirror.centos.org/centos/7/os/x86_64/Packages/atk-2.22.0-3.el7.x86_64.rpm
 RUN rpm -ivh --nodeps http://mirror.centos.org/centos/7/os/x86_64/Packages/at-spi2-atk-2.22.0-2.el7.x86_64.rpm
