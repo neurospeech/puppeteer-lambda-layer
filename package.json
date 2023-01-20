@@ -12,6 +12,7 @@
   "dependencies": {
     "@types/node": "^18.11.18",
     "puppeteer": "^19.5.2",
+    "puppeteer-core": "^19.5.2",
     "tmp-promise": "^3.0.3"
   }
 }

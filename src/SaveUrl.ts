@@ -1,6 +1,9 @@
 import TempFileService from "./TempFileService";
 import { readFileSync } from "fs";
 import puppeteer from "puppeteer";
+import { join } from "path";
+
+const executablePath = join(__dirname, "..", 'node_modules', 'puppeteer-chromium');
 
 const sleep = (n) => new Promise((resolve, reject) => {
     if (typeof n !== "number") {
@@ -28,6 +31,7 @@ export default class SaveUrl {
         
         const browser = await puppeteer.launch({
             ignoreHTTPSErrors: true,
+            executablePath
         });
     
         let page = await browser.newPage();
