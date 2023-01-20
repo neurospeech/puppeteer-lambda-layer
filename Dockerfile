@@ -4,7 +4,7 @@ FROM public.ecr.aws/lambda/nodejs:18-x86_64
 # RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
 # RUN yum install ./google-chrome-stable_current_*.rpm -y
 
-RUN yum -y install epel-release
+RUN yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 RUN yum install -y chromium
 
 COPY dist ${LAMBDA_TASK_ROOT}/dist
