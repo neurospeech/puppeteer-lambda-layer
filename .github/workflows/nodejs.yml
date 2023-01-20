@@ -23,26 +23,44 @@ jobs:
     - run: npm install puppeteer
     - run: npm install -g typescript
     - run: tsc
-    - run: mkdir ./nodejs
-    - run: mkdir ./nodejs/node_modules
-    - run: mkdir ./nodejs/node_modules/puppeteer-lambda
-    - run: cp ./node_modules ./nodejs/node_modules -r
-    - run: cp ./package.json ./nodejs/node_modules/puppeteer-lambda/package.json
-    - run: cp ./dist ./nodejs/node_modules/puppeteer-lambda/dist -r
-    - run: cp ./index.js ./nodejs/node_modules/puppeteer-lambda/index.js
-    - name: action-zip
-      uses: montudor/action-zip@v1.0.0
+
+    - name: Login to ECR
+      id: ecr
+      uses: elgohr/ecr-login-action@v3
       with:
-        args: zip -qq -r package.zip nodejs
-    - uses: hkusu/s3-upload-action@v2
+        access_key: ${{ secrets.AWS_ACCESS_KEY }}
+        secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        region: ${{ secrets.AWS_REGION }}
+
+    - name: Publish to Registry
+      uses: elgohr/Publish-Docker-Github-Action@v5
       with:
-         aws-access-key-id: "${{ secrets.AWS_ACCESS_KEY_ID }}"
-         aws-secret-access-key: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
-         aws-region: "${{ secrets.AWS_REGION }}"
-         aws-bucket: "${{ secrets.AWS_BUCKET }}"
-         file-path: 'package.zip'
-         bucket-root: "puppeteer-layer"
-         destination-dir: "/"
+        name: myDocker/repository
+        username: ${{ steps.ecr.outputs.username }}
+        password: ${{ steps.ecr.outputs.password }}
+        registry: ${{ steps.ecr.outputs.registry }}
+
+
+    # - run: mkdir ./nodejs
+    # - run: mkdir ./nodejs/node_modules
+    # - run: mkdir ./nodejs/node_modules/puppeteer-lambda
+    # - run: cp ./node_modules ./nodejs/node_modules -r
+    # - run: cp ./package.json ./nodejs/node_modules/puppeteer-lambda/package.json
+    # - run: cp ./dist ./nodejs/node_modules/puppeteer-lambda/dist -r
+    # - run: cp ./index.js ./nodejs/node_modules/puppeteer-lambda/index.js
+    # - name: action-zip
+    #   uses: montudor/action-zip@v1.0.0
+    #   with:
+    #     args: zip -qq -r package.zip nodejs
+    # - uses: hkusu/s3-upload-action@v2
+    #   with:
+    #      aws-access-key-id: "${{ secrets.AWS_ACCESS_KEY_ID }}"
+    #      aws-secret-access-key: "${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+    #      aws-region: "${{ secrets.AWS_REGION }}"
+    #      aws-bucket: "${{ secrets.AWS_BUCKET }}"
+    #      file-path: 'package.zip'
+    #      bucket-root: "puppeteer-layer"
+    #      destination-dir: "/"
     
 #     - name: default deploy
 #       uses: appleboy/lambda-action@master
