@@ -6,6 +6,4 @@ COPY src ${LAMBDA_TASK_ROOT}/src
 COPY index.js ${LAMBDA_TASK_ROOT}
 COPY node_modules ${LAMBDA_TASK_ROOT}/node_modules
 
-RUN chmod -R +x ${LAMBDA_TASK_ROOT}/node_modules/puppeteer-chromium
-
 CMD [ "index.handler" ]
