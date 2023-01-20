@@ -13,7 +13,7 @@ const userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleW
 //     return join(root, first, "chrome-linux", "chrome");
 // })();
 
-const executablePath = "/usr/bin/chromium";
+const executablePath = "/usr/bin/chromium-browser";
 
 const sleep = (n) => new Promise((resolve, reject) => {
     if (typeof n !== "number") {
