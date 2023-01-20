@@ -1,6 +1,6 @@
 import TempFileService from "./TempFileService";
-import chromium from "chrome-aws-lambda";
 import { readFileSync } from "fs";
+import puppeteer from "puppeteer";
 
 const sleep = (n) => new Promise((resolve, reject) => {
     if (typeof n !== "number") {
@@ -26,11 +26,7 @@ export default class SaveUrl {
         const file = await TempFileService.getTempFile("a.png");
 
         
-        const browser = await chromium.puppeteer.launch({
-            args: chromium.args,
-            defaultViewport: chromium.defaultViewport,
-            executablePath: await chromium.executablePath,
-            headless: chromium.headless,
+        const browser = await puppeteer.launch({
             ignoreHTTPSErrors: true,
         });
     
