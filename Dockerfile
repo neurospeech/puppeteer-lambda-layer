@@ -1,19 +1,9 @@
-FROM public.ecr.aws/lambda/nodejs:18
+FROM public.ecr.aws/lambda/nodejs:18-x86_64
 
-ENV LANG=en_US.UTF-8
-ENV TZ=:/etc/localtime
-ENV PATH=/var/lang/bin:/usr/local/bin:/usr/bin/:/bin:/opt/bin
-ENV LD_LIBRARY_PATH=/var/lang/lib:/lib64:/usr/lib64:/var/runtime:/var/runtime/lib:/var/task:/var/task/lib:/opt/lib
-ENV LAMBDA_TASK_ROOT=/var/task
-ENV LAMBDA_RUNTIME_DIR=/var/runtime
+COPY dist ${LAMBDA_TASK_ROOT}
+COPY package.json ${LAMBDA_TASK_ROOT}
+COPY src ${LAMBDA_TASK_ROOT}
+COPY index.js ${LAMBDA_TASK_ROOT}
+COPY node_modules ${LAMBDA_TASK_ROOT}
 
-WORKDIR /var/task
-
-COPY dist /var/task/dist
-COPY package.json /var/task/pacakge.json
-COPY src /var/task/src
-COPY index.js /var/task/index.js
-COPY node_modules /var/task/node_modules
-
-
-ENTRYPOINT ["/lambda-entrypoint.sh"]
+CMD [ "index.handler" ]
