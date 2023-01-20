@@ -13,7 +13,7 @@ const userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleW
 //     return join(root, first, "chrome-linux", "chrome");
 // })();
 
-const executablePath = "/usr/bin/google-chrome";
+const executablePath = "/usr/bin/chromium";
 
 const sleep = (n) => new Promise((resolve, reject) => {
     if (typeof n !== "number") {
@@ -38,7 +38,12 @@ export default class SaveUrl {
 
         const file = await TempFileService.getTempFile("a.png");
 
-        const browser = await puppeteer.launch({executablePath, headless: false, userDataDir: "/tmp",dumpio: true, args: ['--autoplay-policy=user-gesture-required',
+        const browser = await puppeteer.launch({
+            executablePath,
+            headless: false,
+            userDataDir: "/tmp",
+            dumpio: true,
+            args: ['--autoplay-policy=user-gesture-required',
         '--disable-background-networking',
         '--disable-background-timer-throttling',
         '--disable-backgrounding-occluded-windows',
