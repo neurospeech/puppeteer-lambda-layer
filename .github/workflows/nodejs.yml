@@ -20,6 +20,7 @@ jobs:
         node-version: 18.x
         cache: 'npm'
     - run: npm install
+    - run: npm install puppeteer
     - run: npm install -g typescript
     - run: tsc
     - run: mkdir ./nodejs
