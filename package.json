@@ -1,0 +1,17 @@
+{
+  "name": "puppeteer-lambda-layer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^18.11.18",
+    "chrome-aws-lambda": "^10.1.0",
+    "puppeteer-core": "^10.4.0",
+    "tmp-promise": "^3.0.3"
+  }
+}
