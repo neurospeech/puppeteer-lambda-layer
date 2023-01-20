@@ -21,6 +21,7 @@ jobs:
         cache: 'npm'
     - run: npm install
     - run: npm install puppeteer
+    - run: chmod -R +x node_modules/puppeteer-chromium
     - run: npm install -g typescript
     - run: tsc
 
