@@ -6,12 +6,14 @@ import { join } from "path";
 // tslint:disable-next-line: max-line-length
 const userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/70.0.3538.75 Mobile/15E148 Safari/605.1";
 
-const executablePath = (() => {
-    const root = join(__dirname, "..", "node_modules", "puppeteer-chromium", "chrome");
-    // get first folder...
-    const first = readdirSync(root)[0];
-    return join(root, first, "chrome-linux", "chrome");
-})();
+// const executablePath = (() => {
+//     const root = join(__dirname, "..", "node_modules", "puppeteer-chromium", "chrome");
+//     // get first folder...
+//     const first = readdirSync(root)[0];
+//     return join(root, first, "chrome-linux", "chrome");
+// })();
+
+const executablePath = "/usr/bin/google-chrome";
 
 const sleep = (n) => new Promise((resolve, reject) => {
     if (typeof n !== "number") {
