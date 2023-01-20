@@ -23,11 +23,12 @@ jobs:
     - run: npm install -g typescript
     - run: tsc
     - run: mkdir ./nodejs
-    - run: mkdir ./nodejs/puppeteer-lambda
+    - run: mkdir ./nodejs/node_modules
+    - run: mkdir ./nodejs/node_modules/puppeteer-lambda
     - run: cp ./node_modules ./nodejs/node_modules -r
-    - run: cp ./package.json ./nodejs/puppeteer-lambda/package.json
-    - run: cp ./dist ./nodejs/puppeteer-lambda/dist -r
-    - run: cp ./index.js ./nodejs/puppeteer-lambda/index.js
+    - run: cp ./package.json ./nodejs/node_modules/puppeteer-lambda/package.json
+    - run: cp ./dist ./nodejs/node_modules/puppeteer-lambda/dist -r
+    - run: cp ./index.js ./nodejs/node_modules/puppeteer-lambda/index.js
     - name: action-zip
       uses: montudor/action-zip@v1.0.0
       with:
