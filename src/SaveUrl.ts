@@ -80,6 +80,8 @@ export default class SaveUrl {
 
         const file = await TempFileService.getTempFile("a.png");
 
+        console.log(`Received URL: ${url}`);
+
         const browser = await puppeteer.launch({
             executablePath,
             headless: true,
@@ -87,19 +89,27 @@ export default class SaveUrl {
             dumpio: true,
             args: options
         });
-        let page = await browser.newPage();
-        page.setUserAgent(userAgent);
-        page.setViewport({ width, height });
 
+        console.log(`Puppeteer Launched.`);
+
+        let page = await browser.newPage();
+
+        console.log(`New Page created.`);
+        page.setUserAgent(userAgent);
+
+        console.log(`User agent set.`);
+        page.setViewport({ width, height });
+        console.log(`Screen Size set.`);
         await page.goto(url);
+        console.log(`Url loaded.`);
 
         await sleep(timeout);
+        console.log(`Taking screenshot.`);
 
-        await page.screenshot({ path: file.path });
-
+        const screen = await page.screenshot() as Buffer;
+        console.log(`Sending screenshot.`);
+        const body = screen.toString("base64");
         await browser.close();
-
-        const body = readFileSync(file.path, "base64");
 
         return {
             statusCode: 200,
