@@ -36,10 +36,11 @@ RUN apt-get update \
     && apt-get install -y fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
       --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
-ADD aws-lambda-rie /usr/local/bin/aws-lambda-rie
+RUN mkdir -p ~/.aws-lambda-rie && curl -Lo ~/.aws-lambda-rie/aws-lambda-rie \
+    https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie \
+    && chmod +x ~/.aws-lambda-rie/aws-lambda-rie
 ADD entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod u+x /usr/local/bin/entrypoint.sh
-ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
 ENV HOME="/tmp"
 
 COPY dist ${FUNCTION_DIR}/dist
@@ -48,4 +49,5 @@ COPY src ${FUNCTION_DIR}/src
 COPY index.js ${FUNCTION_DIR}
 COPY node_modules ${FUNCTION_DIR}/node_modules
 
+ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
 CMD [ "index.handler" ]
