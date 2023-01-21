@@ -75,10 +75,14 @@ export default class SaveUrl {
                 timeout = 2000,
                 height = 800,
                 width = 400,
+                mobile = true,
+                pdf = null,
                 killEvent = "kill"
             } = {} as any } = event;
 
             // const file = await TempFileService.getTempFile("a.png");
+
+            const asPdf = pdf ? JSON.parse(pdf) : null;
 
             console.log(`Received URL: ${url}`);
 
@@ -96,8 +100,10 @@ export default class SaveUrl {
             console.log(`New Page created.`);
             page.setUserAgent(userAgent);
 
-            console.log(`User agent set.`);
-            page.setViewport({ width, height });
+            if (mobile) {
+                console.log(`User agent set.`);
+                page.setViewport({ width, height });
+            }
             console.log(`Screen Size set.`);
             await page.goto(url, { waitUntil: "networkidle2"});
             console.log(`Url loaded.`);
@@ -105,7 +111,10 @@ export default class SaveUrl {
             await sleep(timeout);
             console.log(`Taking screenshot.`);
 
-            const screen = await page.screenshot() as Buffer;
+            const screen = asPdf
+                ? await page.pdf(asPdf) as Buffer
+                : await page.screenshot() as Buffer;
+
             console.log(`Sending screenshot.`);
             const body = screen.toString("base64");
             await browser.close();
