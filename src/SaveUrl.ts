@@ -60,7 +60,7 @@ const options = [
     // '--password-store=basic',
     // '--use-gl=swiftshader',
     // '--use-mock-keychain',
-    // '--single-process',
+    '--single-process',
     // '--enable-logging=stderr',
     // '--v=1',
     // '--disable-gpu',
