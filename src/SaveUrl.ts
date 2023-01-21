@@ -19,31 +19,29 @@ const sleep = (n) => new Promise((resolve, reject) => {
     if (typeof n !== "number") {
         n = parseInt(n, 10);
     }
-    setTimeout(() => {
-        resolve;
-    }, (n));
+    setTimeout(() => resolve, (n));
 });
 
 const options = [
-    // '--disable-background-networking',
-    // '--disable-background-timer-throttling',
-    // '--disable-backgrounding-occluded-windows',
-    // '--disable-breakpad',
-    // '--disable-client-side-phishing-detection',
-    // '--disable-component-update',
-    // '--disable-default-apps',
-    // '--disable-dev-shm-usage',
-    // '--disable-domain-reliability',
-    // '--disable-extensions',
-    // '--disable-features=AudioServiceOutOfProcess',
-    // '--disable-hang-monitor',
-    // '--disable-ipc-flooding-protection',
-    // '--disable-notifications',
-    // '--disable-offer-store-unmasked-wallet-cards',
-    // '--disable-popup-blocking',
-    // '--disable-print-preview',
-    // '--disable-prompt-on-repost',
-    // '--disable-renderer-backgrounding',
+    '--disable-background-networking',
+    '--disable-background-timer-throttling',
+    '--disable-backgrounding-occluded-windows',
+    '--disable-breakpad',
+    '--disable-client-side-phishing-detection',
+    '--disable-component-update',
+    '--disable-default-apps',
+    '--disable-dev-shm-usage',
+    '--disable-domain-reliability',
+    '--disable-extensions',
+    '--disable-features=AudioServiceOutOfProcess',
+    '--disable-hang-monitor',
+    '--disable-ipc-flooding-protection',
+    '--disable-notifications',
+    '--disable-offer-store-unmasked-wallet-cards',
+    '--disable-popup-blocking',
+    '--disable-print-preview',
+    '--disable-prompt-on-repost',
+    '--disable-renderer-backgrounding',
     '--disable-setuid-sandbox',
     '--disable-speech-api',
     '--disable-sync',
@@ -51,15 +49,15 @@ const options = [
     // '--hide-scrollbars',
     // '--ignore-gpu-blacklist',
     // '--metrics-recording-only',
-    // '--mute-audio',
-    // '--no-default-browser-check',
-    // '--no-first-run',
-    // '--no-pings',
+    '--mute-audio',
+    '--no-default-browser-check',
+    '--no-first-run',
+    '--no-pings',
     '--no-sandbox',
     '--no-zygote',
-    // '--password-store=basic',
-    // '--use-gl=swiftshader',
-    // '--use-mock-keychain',
+    '--password-store=basic',
+    '--use-gl=swiftshader',
+    '--use-mock-keychain',
     '--single-process',
     // '--enable-logging=stderr',
     // '--v=1',
@@ -80,7 +78,7 @@ export default class SaveUrl {
                 killEvent = "kill"
             } = {} as any } = event;
 
-            const file = await TempFileService.getTempFile("a.png");
+            // const file = await TempFileService.getTempFile("a.png");
 
             console.log(`Received URL: ${url}`);
 
