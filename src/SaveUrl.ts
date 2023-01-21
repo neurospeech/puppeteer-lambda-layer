@@ -85,7 +85,7 @@ export default class SaveUrl {
 
             const browser = await puppeteer.launch({
                 executablePath,
-                headless: true,
+                headless: false,
                 userDataDir: "/tmp",
                 dumpio: true,
                 args: options
