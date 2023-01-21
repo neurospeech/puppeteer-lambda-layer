@@ -24,6 +24,30 @@ const sleep = (n) => new Promise((resolve, reject) => {
     }, (n));
 });
 
+const options = ['--allow-running-insecure-content', // https://source.chromium.org/search?q=lang:cpp+symbol:kAllowRunningInsecureContent&ss=chromium
+      '--autoplay-policy=user-gesture-required', // https://source.chromium.org/search?q=lang:cpp+symbol:kAutoplayPolicy&ss=chromium
+      '--disable-component-update', // https://source.chromium.org/search?q=lang:cpp+symbol:kDisableComponentUpdate&ss=chromium
+      '--disable-domain-reliability', // https://source.chromium.org/search?q=lang:cpp+symbol:kDisableDomainReliability&ss=chromium
+      '--disable-features=AudioServiceOutOfProcess,IsolateOrigins,site-per-process', // https://source.chromium.org/search?q=file:content_features.cc&ss=chromium
+      '--disable-print-preview', // https://source.chromium.org/search?q=lang:cpp+symbol:kDisablePrintPreview&ss=chromium
+      '--disable-setuid-sandbox', // https://source.chromium.org/search?q=lang:cpp+symbol:kDisableSetuidSandbox&ss=chromium
+      '--disable-site-isolation-trials', // https://source.chromium.org/search?q=lang:cpp+symbol:kDisableSiteIsolation&ss=chromium
+      '--disable-speech-api', // https://source.chromium.org/search?q=lang:cpp+symbol:kDisableSpeechAPI&ss=chromium
+      '--disable-web-security', // https://source.chromium.org/search?q=lang:cpp+symbol:kDisableWebSecurity&ss=chromium
+      '--disk-cache-size=33554432', // https://source.chromium.org/search?q=lang:cpp+symbol:kDiskCacheSize&ss=chromium
+      '--enable-features=SharedArrayBuffer', // https://source.chromium.org/search?q=file:content_features.cc&ss=chromium
+      '--hide-scrollbars', // https://source.chromium.org/search?q=lang:cpp+symbol:kHideScrollbars&ss=chromium
+      '--ignore-gpu-blocklist', // https://source.chromium.org/search?q=lang:cpp+symbol:kIgnoreGpuBlocklist&ss=chromium
+      '--in-process-gpu', // https://source.chromium.org/search?q=lang:cpp+symbol:kInProcessGPU&ss=chromium
+      '--mute-audio', // https://source.chromium.org/search?q=lang:cpp+symbol:kMuteAudio&ss=chromium
+      '--no-default-browser-check', // https://source.chromium.org/search?q=lang:cpp+symbol:kNoDefaultBrowserCheck&ss=chromium
+      '--no-pings', // https://source.chromium.org/search?q=lang:cpp+symbol:kNoPings&ss=chromium
+      '--no-sandbox', // https://source.chromium.org/search?q=lang:cpp+symbol:kNoSandbox&ss=chromium
+      '--no-zygote', // https://source.chromium.org/search?q=lang:cpp+symbol:kNoZygote&ss=chromium
+      '--use-gl=swiftshader', // https://source.chromium.org/search?q=lang:cpp+symbol:kUseGl&ss=chromium
+      '--window-size=1920,1080', // https://source.chromium.org/search?q=lang:cpp+symbol:kWindowSize&ss=chromium
+];
+
 export default class SaveUrl {
 
     public static async save(event) {
@@ -40,49 +64,11 @@ export default class SaveUrl {
 
         const browser = await puppeteer.launch({
             executablePath,
-            headless: false,
+            headless: true,
             userDataDir: "/tmp",
             dumpio: true,
-            args: ['--autoplay-policy=user-gesture-required',
-        '--disable-background-networking',
-        '--disable-background-timer-throttling',
-        '--disable-backgrounding-occluded-windows',
-        '--disable-breakpad',
-        '--disable-client-side-phishing-detection',
-        '--disable-component-update',
-        '--disable-default-apps',
-        '--disable-dev-shm-usage',
-        '--disable-domain-reliability',
-        '--disable-extensions',
-        '--disable-features=AudioServiceOutOfProcess',
-        '--disable-hang-monitor',
-        '--disable-ipc-flooding-protection',
-        '--disable-notifications',
-        '--disable-offer-store-unmasked-wallet-cards',
-        '--disable-popup-blocking',
-        '--disable-print-preview',
-        '--disable-prompt-on-repost',
-        '--disable-renderer-backgrounding',
-        '--disable-setuid-sandbox',
-        '--disable-speech-api',
-        '--disable-sync',
-        '--disk-cache-size=33554432',
-        '--hide-scrollbars',
-        '--ignore-gpu-blacklist',
-        '--metrics-recording-only',
-        '--mute-audio',
-        '--no-default-browser-check',
-        '--no-first-run',
-        '--no-pings',
-        '--no-sandbox',
-        '--no-zygote',
-        '--password-store=basic',
-        '--use-gl=swiftshader',
-        '--use-mock-keychain',
-        '--single-process',
-        '--enable-logging=stderr',
-        '--v=1',
-        '--disable-gpu']});
+            args: options
+        });
         let page = await browser.newPage();
         page.setUserAgent(userAgent);
         page.setViewport({ width, height });
