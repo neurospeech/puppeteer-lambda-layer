@@ -16,11 +16,9 @@ RUN apt-get update && \
         cmake
 # Copy function code
 RUN mkdir -p ${FUNCTION_DIR}/
-COPY app/ ${FUNCTION_DIR}
-RUN ls ${FUNCTION_DIR}
+
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 WORKDIR ${FUNCTION_DIR}
-RUN npm install
 
 # Build Stage 2: Copy Build Stage 1 files in to Stage 2. Install chromium dependencies and chromium.
 FROM node:18-buster-slim
