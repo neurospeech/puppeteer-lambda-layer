@@ -49,7 +49,5 @@ COPY node_modules ${FUNCTION_DIR}/node_modules
 
 WORKDIR ${FUNCTION_DIR}
 
-RUN npm install puppeteer
-
 ENTRYPOINT ["/usr/local/bin/npx", "aws-lambda-ric"]
 CMD [ "index.handler" ]
