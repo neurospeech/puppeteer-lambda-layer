@@ -46,7 +46,7 @@ COPY src ${FUNCTION_DIR}/src
 COPY index.js ${FUNCTION_DIR}
 COPY node_modules ${FUNCTION_DIR}/node_modules
 
-WORKDIR #{FUNCTION_DIR}
+WORKDIR ${FUNCTION_DIR}
 
 ENTRYPOINT ["/usr/local/bin/npx", "aws-lambda-ric"]
 CMD [ "index.handler" ]
