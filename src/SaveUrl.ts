@@ -86,8 +86,8 @@ export default class SaveUrl {
             const browser = await puppeteer.launch({
                 executablePath,
                 userDataDir: "/tmp",
-                dumpio: true,
-                args: options
+                // dumpio: true,
+                // args: options
             });
 
             console.log(`Puppeteer Launched.`);
