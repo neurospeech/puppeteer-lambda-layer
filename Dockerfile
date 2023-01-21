@@ -13,7 +13,9 @@ RUN apt-get update && \
         libcurl4-openssl-dev \
         autoconf \
         libtool \
-        cmake
+        cmake \
+        nodejs \
+        npm
 # Copy function code
 RUN mkdir -p ${FUNCTION_DIR}/
 
