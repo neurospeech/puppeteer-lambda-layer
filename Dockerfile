@@ -19,6 +19,7 @@ RUN mkdir -p ${FUNCTION_DIR}/
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 WORKDIR ${FUNCTION_DIR}
+RUN npm install aws-lambda-ric
 
 # Build Stage 2: Copy Build Stage 1 files in to Stage 2. Install chromium dependencies and chromium.
 FROM node:18-buster-slim
@@ -46,7 +47,6 @@ COPY index.js ${FUNCTION_DIR}
 COPY node_modules ${FUNCTION_DIR}/node_modules
 
 WORKDIR #{FUNCTION_DIR}
-RUN npm install aws-lambda-ric
 
 ENTRYPOINT ["/usr/local/bin/npx", "aws-lambda-ric"]
 CMD [ "index.handler" ]
