@@ -87,7 +87,7 @@ export default class SaveUrl {
                 executablePath,
                 userDataDir: "/tmp",
                 // dumpio: true,
-                // args: options
+                args: options
             });
 
             console.log(`Puppeteer Launched.`);
