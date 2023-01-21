@@ -69,56 +69,64 @@ const options = [ '--disable-background-networking',
 export default class SaveUrl {
 
     public static async save(event) {
-        const { queryStringParameters: {
-            url,
-            html,
-            timeout = 2000,
-            height = 800,
-            width = 400,
-            killEvent = "kill"
-        } = {} as any } = event;
+        try {
+            const { queryStringParameters: {
+                url,
+                html,
+                timeout = 2000,
+                height = 800,
+                width = 400,
+                killEvent = "kill"
+            } = {} as any } = event;
 
-        const file = await TempFileService.getTempFile("a.png");
+            const file = await TempFileService.getTempFile("a.png");
 
-        console.log(`Received URL: ${url}`);
+            console.log(`Received URL: ${url}`);
 
-        const browser = await puppeteer.launch({
-            executablePath,
-            headless: true,
-            userDataDir: "/tmp",
-            dumpio: true,
-            args: options
-        });
+            const browser = await puppeteer.launch({
+                executablePath,
+                headless: true,
+                userDataDir: "/tmp",
+                dumpio: true,
+                args: options
+            });
 
-        console.log(`Puppeteer Launched.`);
+            console.log(`Puppeteer Launched.`);
 
-        let page = await browser.newPage();
+            let page = await browser.newPage();
 
-        console.log(`New Page created.`);
-        page.setUserAgent(userAgent);
+            console.log(`New Page created.`);
+            page.setUserAgent(userAgent);
 
-        console.log(`User agent set.`);
-        page.setViewport({ width, height });
-        console.log(`Screen Size set.`);
-        await page.goto(url);
-        console.log(`Url loaded.`);
+            console.log(`User agent set.`);
+            page.setViewport({ width, height });
+            console.log(`Screen Size set.`);
+            await page.goto(url);
+            console.log(`Url loaded.`);
 
-        await sleep(timeout);
-        console.log(`Taking screenshot.`);
+            await sleep(timeout);
+            console.log(`Taking screenshot.`);
 
-        const screen = await page.screenshot() as Buffer;
-        console.log(`Sending screenshot.`);
-        const body = screen.toString("base64");
-        await browser.close();
+            const screen = await page.screenshot() as Buffer;
+            console.log(`Sending screenshot.`);
+            const body = screen.toString("base64");
+            await browser.close();
 
-        return {
-            statusCode: 200,
-            headers: {
-                "content-type": "image/png"
-            },
-            body,
-            isBase64Encoded: true
-        };
+            return {
+                statusCode: 200,
+                headers: {
+                    "content-type": "image/png"
+                },
+                body,
+                isBase64Encoded: true
+            };
+        } catch (e) {
+            console.error(e);
+            return {
+                statusCode: 500,
+                body: e.stack ?? e.toString()
+            }
+        }
 
     }
 
