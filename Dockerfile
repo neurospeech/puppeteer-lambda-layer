@@ -47,5 +47,8 @@ COPY src ${FUNCTION_DIR}/src
 COPY index.js ${FUNCTION_DIR}
 COPY node_modules ${FUNCTION_DIR}/node_modules
 
-ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
+WORKDIR #{FUNCTION_DIR}
+RUN npm install aws-lambda-ric
+
+ENTRYPOINT ["/usr/local/bin/npx", "aws-lambda-ric"]
 CMD [ "index.handler" ]
