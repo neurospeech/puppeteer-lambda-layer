@@ -19,7 +19,7 @@ const sleep = (n) => new Promise((resolve, reject) => {
     if (typeof n !== "number") {
         n = parseInt(n, 10);
     }
-    setTimeout(() => resolve, (n));
+    setTimeout(resolve, (n));
 });
 
 const options = [
@@ -99,7 +99,7 @@ export default class SaveUrl {
             console.log(`User agent set.`);
             page.setViewport({ width, height });
             console.log(`Screen Size set.`);
-            await page.goto(url);
+            await page.goto(url, { waitUntil: "networkidle2"});
             console.log(`Url loaded.`);
 
             await sleep(timeout);
