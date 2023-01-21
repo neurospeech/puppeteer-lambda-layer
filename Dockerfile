@@ -13,9 +13,7 @@ RUN apt-get update && \
         libcurl4-openssl-dev \
         autoconf \
         libtool \
-        cmake \
-        nodejs \
-        npm
+        cmake
 # Copy function code
 RUN mkdir -p ${FUNCTION_DIR}/
 
@@ -33,7 +31,7 @@ COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
 RUN ls ${FUNCTION_DIR}
 # Install chromium and dependencies
 RUN apt-get update \
-    && apt-get install -y wget gnupg chromium mesa-va-drivers libva-drm2 libva-x11-2 mesa-utils mesa-utils-extra \
+    && apt-get install -y wget gnupg chromium mesa-va-drivers libva-drm2 libva-x11-2 mesa-utils mesa-utils-extra nodejs npm\
     && apt-get update \
     && apt-get install -y fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
       --no-install-recommends \
