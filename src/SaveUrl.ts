@@ -122,7 +122,7 @@ export default class SaveUrl {
             return {
                 statusCode: 200,
                 headers: {
-                    "content-type": "image/png"
+                    "content-type": asPdf ? "application/pdf" : "image/png"
                 },
                 body,
                 isBase64Encoded: true
