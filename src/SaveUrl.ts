@@ -73,11 +73,12 @@ export default class SaveUrl {
                 url,
                 html,
                 timeout = 2000,
-                height = 800,
-                width = 400,
                 mobile = true,
+                height = mobile ? 800 : 900,
+                width = mobile ? 400 : 1024,
                 pdf = null,
-                killEvent = "kill"
+                killEvent = "kill",
+                waitUntil = "networkidle2"
             } = {} as any } = event;
 
             // const file = await TempFileService.getTempFile("a.png");
@@ -98,14 +99,14 @@ export default class SaveUrl {
             let page = await browser.newPage();
 
             console.log(`New Page created.`);
-            page.setUserAgent(userAgent);
 
             if (mobile) {
                 console.log(`User agent set.`);
-                page.setViewport({ width, height });
+                page.setUserAgent(userAgent);
             }
+            page.setViewport({ width, height });
             console.log(`Screen Size set.`);
-            await page.goto(url, { waitUntil: "networkidle2"});
+            await page.goto(url, { waitUntil });
             console.log(`Url loaded.`);
 
             await sleep(timeout);
