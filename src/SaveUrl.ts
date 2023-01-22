@@ -81,6 +81,10 @@ export default class SaveUrl {
                 waitUntil = "networkidle2"
             } = {} as any } = event;
 
+            if(!url) {
+                throw new Error("No url specified");
+            }
+
             // const file = await TempFileService.getTempFile("a.png");
 
             const asPdf = pdf ? JSON.parse(pdf) : null;
