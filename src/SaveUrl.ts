@@ -72,13 +72,12 @@ export default class SaveUrl {
             const { queryStringParameters: {
                 url,
                 html,
-                timeout = 2000,
+                timeout = 15000,
                 mobile = true,
                 height = mobile ? 800 : 900,
                 width = mobile ? 400 : 1024,
                 pdf = null,
-                killEvent = "kill",
-                waitUntil = "networkidle2"
+                stopTest = "window.pageReady"
             } = {} as any } = event;
 
             if(!url) {
@@ -110,10 +109,19 @@ export default class SaveUrl {
             }
             page.setViewport({ width, height });
             console.log(`Screen Size set.`);
-            await page.goto(url, { waitUntil });
+            await page.goto(url, { waitUntil: "networkidle2" });
             console.log(`Url loaded.`);
 
-            await sleep(timeout);
+            let start = Date.now();
+            let end = start + timeout;
+            for (let index = start; index < end; index+=1000) {
+                await sleep(1000);
+                start += 1000;
+                if(await page.evaluate(stopTest)) {
+                    break;
+                }
+            }
+
             console.log(`Taking screenshot.`);
 
             const screen = asPdf
