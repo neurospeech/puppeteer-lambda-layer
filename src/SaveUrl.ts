@@ -67,6 +67,8 @@ const options = [
 
 const asNumber = (n) => typeof n === "number" ? n : parseInt(n, 10);
 
+const asBoolean = (n) => typeof n === "boolean" ? n : (typeof n === "string" ? /true|yes/i.test(n) : false);
+
 export default class SaveUrl {
 
     public static async save(event) {
@@ -105,7 +107,7 @@ export default class SaveUrl {
 
             console.log(`New Page created.`);
 
-            if (mobile) {
+            if (asBoolean(mobile)) {
                 console.log(`User agent set.`);
                 page.setUserAgent(userAgent);
             }
