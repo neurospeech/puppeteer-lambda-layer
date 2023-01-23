@@ -116,7 +116,6 @@ export default class SaveUrl {
             let end = start + timeout;
             for (let index = start; index < end; index+=1000) {
                 await sleep(1000);
-                start += 1000;
                 if(await page.evaluate(stopTest)) {
                     break;
                 }
