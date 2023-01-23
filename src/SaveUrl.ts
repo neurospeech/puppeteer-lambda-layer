@@ -75,13 +75,14 @@ export default class SaveUrl {
         try {
             const { queryStringParameters: {
                 url,
-                html,
+                content,
                 timeout = 15000,
                 mobile = true,
                 height = mobile ? 800 : 900,
                 width = mobile ? 400 : 1024,
                 deviceScaleFactor = mobile ? 2: 1,
                 pdf = null,
+                html = null,
                 stopTest = "window.pageReady"
             } = {} as any } = event;
 
@@ -122,7 +123,7 @@ export default class SaveUrl {
                 await page.goto(url, { waitUntil: "networkidle2" });
                 console.log(`Url loaded.`);
             } else {
-                await page.setContent(html, { waitUntil: "networkidle2"});
+                await page.setContent(content, { waitUntil: "networkidle2"});
                 console.log(`Content loaded.`);
             }
 
@@ -133,6 +134,17 @@ export default class SaveUrl {
                 if(await page.evaluate(stopTest)) {
                     break;
                 }
+            }
+
+            if (asBoolean(html)) {
+                const text = await page.evaluate("window.document.documentElement.outerHTML");
+                return {
+                    statusCode: 200,
+                    headers: {
+                        "content-type": "text/html"
+                    },
+                    body: text
+                };
             }
 
             console.log(`Taking screenshot.`);
