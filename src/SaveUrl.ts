@@ -80,6 +80,7 @@ export default class SaveUrl {
                 mobile = true,
                 height = mobile ? 800 : 900,
                 width = mobile ? 400 : 1024,
+                deviceScaleFactor = mobile ? 2: 1,
                 pdf = null,
                 stopTest = "window.pageReady"
             } = {} as any } = event;
@@ -113,11 +114,17 @@ export default class SaveUrl {
             }
             page.setViewport({
                 width: asNumber(width),
-                height: asNumber(height)
+                height: asNumber(height),
+                deviceScaleFactor: asNumber(deviceScaleFactor)
             });
             console.log(`Screen Size set.`);
-            await page.goto(url, { waitUntil: "networkidle2" });
-            console.log(`Url loaded.`);
+            if (url) {
+                await page.goto(url, { waitUntil: "networkidle2" });
+                console.log(`Url loaded.`);
+            } else {
+                await page.setContent(html, { waitUntil: "networkidle2"});
+                console.log(`Content loaded.`);
+            }
 
             let start = Date.now();
             let end = start + timeout;
