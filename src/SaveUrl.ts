@@ -65,6 +65,8 @@ const options = [
     //   '--window-size=400,800',
 ];
 
+const asNumber = (n) => typeof n === "number" ? n : parseInt(n, 10);
+
 export default class SaveUrl {
 
     public static async save(event) {
@@ -107,7 +109,10 @@ export default class SaveUrl {
                 console.log(`User agent set.`);
                 page.setUserAgent(userAgent);
             }
-            page.setViewport({ width, height });
+            page.setViewport({
+                width: asNumber(width),
+                height: asNumber(height)
+            });
             console.log(`Screen Size set.`);
             await page.goto(url, { waitUntil: "networkidle2" });
             console.log(`Url loaded.`);
