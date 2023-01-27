@@ -199,6 +199,7 @@ export default class SaveUrl {
         // disable image/css/font/video...
 
         if (isHtml) {
+            await page.setRequestInterception(true);
             page.on("request", (req) => {
                 if(/stylesheet|image|font|media|websocket/.test(req.resourceType())) {
                     req.abort();
