@@ -90,35 +90,22 @@ export default class SaveUrl {
                 throw new Error("No url specified");
             }
 
+            const isHtml = asBoolean(html);
+
             // const file = await TempFileService.getTempFile("a.png");
 
             const asPdf = pdf ? JSON.parse(pdf) : null;
 
             console.log(`Received URL: ${url}`);
 
-            const browser = await puppeteer.launch({
-                executablePath,
-                userDataDir: "/tmp",
-                // dumpio: true,
-                args: options
+            var { page, browser } = await SaveUrl.createPage({
+                mobile,
+                width,
+                height,
+                deviceScaleFactor,
+                isHtml
             });
 
-            console.log(`Puppeteer Launched.`);
-
-            let page = await browser.newPage();
-
-            console.log(`New Page created.`);
-
-            if (asBoolean(mobile)) {
-                console.log(`User agent set.`);
-                page.setUserAgent(userAgent);
-            }
-            page.setViewport({
-                width: asNumber(width),
-                height: asNumber(height),
-                deviceScaleFactor: asNumber(deviceScaleFactor)
-            });
-            console.log(`Screen Size set.`);
             if (url) {
                 await page.goto(url, { waitUntil: "networkidle2" });
                 console.log(`Url loaded.`);
@@ -136,7 +123,8 @@ export default class SaveUrl {
                 }
             }
 
-            if (asBoolean(html)) {
+            if (isHtml) {
+
                 const text = await page.evaluate("window.document.documentElement.outerHTML");
                 return {
                     statusCode: 200,
@@ -175,4 +163,51 @@ export default class SaveUrl {
 
     }
 
+
+    private static async createPage({
+        mobile,
+        width,
+        height,
+        deviceScaleFactor,
+        isHtml
+    }) {
+        const browser = await puppeteer.launch({
+            executablePath,
+            userDataDir: "/tmp",
+            // dumpio: true,
+            args: options
+        });
+
+        console.log(`Puppeteer Launched.`);
+
+        let page = await browser.newPage();
+
+        console.log(`New Page created.`);
+
+        if (asBoolean(mobile)) {
+            console.log(`User agent set.`);
+            page.setUserAgent(userAgent);
+        }
+        page.setViewport({
+            width: asNumber(width),
+            height: asNumber(height),
+            deviceScaleFactor: asNumber(deviceScaleFactor)
+        });
+        console.log(`Screen Size set.`);
+
+        // if it is html...
+        // disable image/css/font/video...
+
+        if (isHtml) {
+            page.on("request", (req) => {
+                if(/stylesheet|image|font|media|websocket/.test(req.resourceType())) {
+                    req.abort();
+                    return;
+                }
+                req.continue();
+            });
+        }
+
+        return { page, browser };
+    }
 }
