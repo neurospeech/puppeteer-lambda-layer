@@ -115,7 +115,7 @@ export default class SaveUrl {
             }
 
             let start = Date.now();
-            let end = start + timeout;
+            let end = start + asNumber(timeout);
             for (let index = start; index < end; index+=1000) {
                 await sleep(1000);
                 if(await page.evaluate(stopTest)) {
