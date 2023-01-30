@@ -69,11 +69,49 @@ const asNumber = (n) => typeof n === "number" ? n : parseInt(n, 10);
 
 const asBoolean = (n) => typeof n === "boolean" ? n : (typeof n === "string" ? /true|yes/i.test(n) : false);
 
+const asJson = (n) => typeof n === "string" ? JSON.parse(n) : null;
+
+interface queryParameters {
+    url?: string;
+    content?: string;
+    timeout?: number | string;
+    mobile?: string | boolean;
+    height?: number | string;
+    width?: number | string;
+    deviceScaleFactor?: number | string;
+    pdf?: any;
+    html?: string | boolean;
+    stopTest?: string;
+};
+
+const queryParametersTranslator = {
+    timeout: asNumber,
+    mobile: asBoolean,
+    height: asNumber,
+    width: asNumber,
+    deviceScaleFactor: asNumber,
+    html: asBoolean,
+    pdf: asJson
+};
+
+function format(e: queryParameters) {
+    for (const key in queryParametersTranslator) {
+        if (Object.prototype.hasOwnProperty.call(queryParametersTranslator, key)) {
+            const element = queryParametersTranslator[key];
+            const v = e[key];
+            if (v !== void 0) {
+                e[key] = element(v);
+            }
+        }
+    }
+    return e;
+};
+
 export default class SaveUrl {
 
     public static async save(event) {
         try {
-            const { queryStringParameters: {
+            const {
                 url,
                 content,
                 timeout = 15000,
@@ -84,17 +122,12 @@ export default class SaveUrl {
                 pdf = null,
                 html = null,
                 stopTest = "window.pageReady"
-            } = {} as any } = event;
+            } = format(event.queryStringParameters ?? {});
 
             if(!url) {
                 throw new Error("No url specified");
             }
 
-            const isHtml = asBoolean(html);
-
-            // const file = await TempFileService.getTempFile("a.png");
-
-            const asPdf = pdf ? JSON.parse(pdf) : null;
 
             console.log(`Received URL: ${url}`);
 
@@ -103,7 +136,7 @@ export default class SaveUrl {
                 width,
                 height,
                 deviceScaleFactor,
-                isHtml
+                html
             });
 
             if (url) {
@@ -123,7 +156,7 @@ export default class SaveUrl {
                 }
             }
 
-            if (isHtml) {
+            if (html) {
 
                 const text = await page.evaluate("window.document.documentElement.outerHTML");
                 return {
@@ -137,8 +170,8 @@ export default class SaveUrl {
 
             console.log(`Taking screenshot.`);
 
-            const screen = asPdf
-                ? await page.pdf(asPdf) as Buffer
+            const screen = pdf
+                ? await page.pdf(pdf) as Buffer
                 : await page.screenshot() as Buffer;
 
             console.log(`Sending screenshot.`);
@@ -148,7 +181,7 @@ export default class SaveUrl {
             return {
                 statusCode: 200,
                 headers: {
-                    "content-type": asPdf ? "application/pdf" : "image/png"
+                    "content-type": pdf ? "application/pdf" : "image/png"
                 },
                 body,
                 isBase64Encoded: true
@@ -169,7 +202,7 @@ export default class SaveUrl {
         width,
         height,
         deviceScaleFactor,
-        isHtml
+        html
     }) {
         const browser = await puppeteer.launch({
             executablePath,
@@ -198,7 +231,7 @@ export default class SaveUrl {
         // if it is html...
         // disable image/css/font/video...
 
-        if (isHtml) {
+        if (html) {
             await page.setRequestInterception(true);
             page.on("request", (req) => {
                 if(/stylesheet|image|font|media|websocket/.test(req.resourceType())) {
