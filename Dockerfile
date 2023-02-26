@@ -17,7 +17,6 @@ RUN apt-get update && \
 # Copy function code
 RUN mkdir -p ${FUNCTION_DIR}/
 
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 WORKDIR ${FUNCTION_DIR}
 
 COPY src ${FUNCTION_DIR}/src
@@ -26,6 +25,8 @@ COPY *.js ${FUNCTION_DIR}/
 COPY *.cjs ${FUNCTION_DIR}/
 
 RUN npm ci && \
+    npm install puppeteer && \
+    chmod -R +x node_modules/puppeteer-chromium \
     npm install -g typescript && \
     npm install aws-lambda-ric && \
     tsc && \
@@ -48,8 +49,7 @@ RUN apt-get update \
       --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-RUN npm install puppeteer && \
-    chmod -R +x node_modules/puppeteer-chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 ENV HOME="/tmp"
 
