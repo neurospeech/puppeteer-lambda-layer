@@ -19,7 +19,15 @@ RUN mkdir -p ${FUNCTION_DIR}/
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 WORKDIR ${FUNCTION_DIR}
-RUN npm install aws-lambda-ric
+COPY package.json ${FUNCTION_DIR}
+COPY src ${FUNCTION_DIR}/src
+COPY index.js ${FUNCTION_DIR}
+RUN npm install && \
+    npm install puppeteer && \
+    chmod -R +x node_modules/puppeteer-chromium && \
+    npm install -g typescript && \
+    npm install aws-lambda-ric && \
+    tsc && \
 
 # Build Stage 2: Copy Build Stage 1 files in to Stage 2. Install chromium dependencies and chromium.
 FROM node:18-buster-slim
@@ -40,12 +48,6 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 ENV HOME="/tmp"
-
-COPY dist ${FUNCTION_DIR}/dist
-COPY package.json ${FUNCTION_DIR}
-COPY src ${FUNCTION_DIR}/src
-COPY index.js ${FUNCTION_DIR}
-COPY node_modules ${FUNCTION_DIR}/node_modules
 
 WORKDIR ${FUNCTION_DIR}
 
