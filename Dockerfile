@@ -26,7 +26,7 @@ COPY *.cjs ${FUNCTION_DIR}/
 
 RUN npm ci && \
     npm install puppeteer && \
-    chmod -R +x node_modules/puppeteer-chromium \
+    chmod -R +x node_modules/puppeteer-chromium && \
     npm install -g typescript && \
     npm install aws-lambda-ric && \
     tsc && \
