@@ -25,9 +25,7 @@ COPY *.json ${FUNCTION_DIR}/
 COPY *.js ${FUNCTION_DIR}/
 COPY *.cjs ${FUNCTION_DIR}/
 
-RUN npm install && \
-    npm install puppeteer && \
-    chmod -R +x node_modules/puppeteer-chromium && \
+RUN npm ci && \
     npm install -g typescript && \
     npm install aws-lambda-ric && \
     tsc && \
@@ -49,6 +47,9 @@ RUN apt-get update \
     && apt-get install -y fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
       --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
+
+RUN npm install puppeteer && \
+    chmod -R +x node_modules/puppeteer-chromium
 
 ENV HOME="/tmp"
 
