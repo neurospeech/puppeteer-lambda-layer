@@ -19,9 +19,9 @@ RUN mkdir -p ${FUNCTION_DIR}/
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 WORKDIR ${FUNCTION_DIR}
-COPY package.json ${FUNCTION_DIR}
-COPY src ${FUNCTION_DIR}/src
-COPY index.js ${FUNCTION_DIR}
+
+COPY function ${FUNCTION_DIR}/
+
 RUN npm install && \
     npm install puppeteer && \
     chmod -R +x node_modules/puppeteer-chromium && \
