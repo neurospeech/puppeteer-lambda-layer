@@ -43,7 +43,7 @@ RUN ls ${FUNCTION_DIR}
 # Install chromium and dependencies
 RUN apt-get update \
     && apt-get install -y x11-apps\
-    && apt-get install -y wget gnupg chromium mesa-va-drivers libva-drm2 libva-x11-2 mesa-utils mesa-utils-extra nodejs npm\
+    && apt-get install -y wget gnupg chromium mesa-va-drivers libva-drm2 libva-x11-2 mesa-utils mesa-utils-extra nodejs npm fonts-noto-color-emoji\
     && apt-get update \
     && apt-get install -y fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf libxss1 \
       --no-install-recommends \
