@@ -19,7 +19,7 @@
       ]
     },
     "include": [
-      "app/src/**/*"
+      "src/**/*"
     ],
     "exclude": [
       "node_modules",
