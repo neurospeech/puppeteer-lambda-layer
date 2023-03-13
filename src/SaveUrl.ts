@@ -4,6 +4,7 @@ import puppeteer, { Browser } from "puppeteer-core";
 import { join } from "path";
 import * as mime from "mime-types";
 import { BlockBlobClient } from "@azure/storage-blob";
+import BotChecker from "./BotChecker";
 
 // tslint:disable-next-line: max-line-length
 const userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/70.0.3538.75 Mobile/15E148 Safari/605.1";
@@ -90,6 +91,8 @@ interface queryParameters {
     html?: string | boolean;
     stopTest?: string;
     output?: string;
+    botCheck?: string | boolean;
+    botUserAgent?: string;
 };
 
 const queryParametersTranslator = {
@@ -99,7 +102,8 @@ const queryParametersTranslator = {
     width: asNumber,
     deviceScaleFactor: asNumber,
     html: asBoolean,
-    pdf: asJson
+    pdf: asJson,
+    botCheck: asBoolean
 };
 
 function format(e: queryParameters) {
@@ -144,6 +148,26 @@ export default class SaveUrl {
     }
 
     async save(event) {
+        const params = format(event.queryStringParameters ?? event.body ?? {});
+
+        const {
+            botCheck,
+            botUserAgent,
+            url
+        } = params;
+
+        if (botCheck) {
+            const { canCrawl , content } = await BotChecker.check(url, botUserAgent);
+            if (!canCrawl) {
+                delete params.url;
+                params.content = content;
+            }
+        }
+
+        return await this.postSave(params);
+    }
+
+    async postSave(event) {
 
         const {
             url,
@@ -156,8 +180,10 @@ export default class SaveUrl {
             pdf = null,
             html = null,
             stopTest = "window.pageReady",
-            output
-        } = format(event.queryStringParameters ?? {});
+            output,
+            botCheck = false,
+            botUserAgent
+        } = event;
 
         if(!url) {
             throw new Error("No url specified");
