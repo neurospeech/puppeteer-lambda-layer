@@ -120,7 +120,12 @@ export default class SaveUrl {
     public static async save(event) {
         const instance = new SaveUrl(event);
         try {
-            return await instance.save(event);
+            const r = await instance.save(event);
+            if (typeof r.body === "object") {
+                (r.headers ??= {} as any)["content-type"] = "application/json";
+                r.body = JSON.stringify(r.body);
+            }
+            return r;
         } catch (e) {
             console.error(e);
             return {
