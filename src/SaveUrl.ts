@@ -1,7 +1,9 @@
 import TempFileService from "./TempFileService";
-import { readFileSync, readdirSync } from "fs";
+import { readFileSync, readdirSync, existsSync } from "fs";
 import puppeteer from "puppeteer-core";
 import { join } from "path";
+import * as mime from "mime-types";
+import { BlockBlobClient } from "@azure/storage-blob";
 
 // tslint:disable-next-line: max-line-length
 const userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/70.0.3538.75 Mobile/15E148 Safari/605.1";
@@ -71,6 +73,11 @@ const asBoolean = (n) => typeof n === "boolean" ? n : (typeof n === "string" ? /
 
 const asJson = (n) => typeof n === "string" ? JSON.parse(n) : null;
 
+interface ICommandInput {
+    url: string;
+    filePath: string;
+}
+
 interface queryParameters {
     url?: string;
     content?: string;
@@ -82,6 +89,7 @@ interface queryParameters {
     pdf?: any;
     html?: string | boolean;
     stopTest?: string;
+    output?: string;
 };
 
 const queryParametersTranslator = {
@@ -121,7 +129,8 @@ export default class SaveUrl {
                 deviceScaleFactor = mobile ? 2: 1,
                 pdf = null,
                 html = null,
-                stopTest = "window.pageReady"
+                stopTest = "window.pageReady",
+                output
             } = format(event.queryStringParameters ?? {});
 
             if(!url) {
@@ -169,6 +178,21 @@ export default class SaveUrl {
             }
 
             console.log(`Taking screenshot.`);
+
+            if (output) {
+                const filePath = await TempFileService.getTempFile(pdf ? ".pdf" : ".jpg");
+                if (pdf) {
+                    await page.pdf(pdf);
+                } else {
+                    await page.screenshot({ path: filePath.path });
+                }
+                return {
+                    statusCode: 200,
+                    body: {
+                        output
+                    }
+                };
+            }
 
             const screen = pdf
                 ? await page.pdf(pdf) as Buffer
@@ -243,5 +267,41 @@ export default class SaveUrl {
         }
 
         return { page, browser };
+    }
+
+    async upload(x: ICommandInput) {
+        if (!existsSync(x.filePath)) {
+            console.log(`File ${x.filePath} does not exist.`);
+            return;
+        }
+        if (!x.url) {
+            console.log(`Cannot upload ${x.filePath} as upload url is empty.`);
+            return;
+        }
+        if (x.url.includes(".blob.core.windows.net")) {
+            // use put...
+            return this.uploadAzure(x);
+        }
+        console.log(`File ${x.url} not supported for upload.`);
+    }
+
+    async uploadAzure({url, filePath}: ICommandInput) {
+        console.log(`Uploading ${url}`);
+
+        const blobContentType = mime.lookup(filePath);
+
+        var b = new BlockBlobClient(url);
+        await b.uploadFile(filePath, {
+            blobHTTPHeaders: {
+                blobContentType,
+                blobCacheControl: "public, max-age=3240000"
+            }
+        });
+        try {
+            await promises.unlink(filePath);
+        } catch {
+            // do nothing...
+        }
+
     }
 }

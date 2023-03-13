@@ -10,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@azure/storage-blob": "^12.13.0",
     "@types/node": "^18.11.18",
+    "mime-types": "^2.1.35",
     "puppeteer-core": "^19.5.2",
     "tmp-promise": "^3.0.3"
   }
