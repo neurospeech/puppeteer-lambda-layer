@@ -161,6 +161,9 @@ export default class SaveUrl {
             if (!canCrawl) {
                 delete params.url;
                 params.content = content;
+                console.log("Bot denied succeeded");
+            } else {
+                console.log("Bot check succeeded");
             }
         }
 
