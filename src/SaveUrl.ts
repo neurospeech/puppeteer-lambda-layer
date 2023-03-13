@@ -1,6 +1,6 @@
 import TempFileService from "./TempFileService";
-import { readFileSync, readdirSync, existsSync } from "fs";
-import puppeteer from "puppeteer-core";
+import { readFileSync, readdirSync, existsSync, promises } from "fs";
+import puppeteer, { Browser } from "puppeteer-core";
 import { join } from "path";
 import * as mime from "mime-types";
 import { BlockBlobClient } from "@azure/storage-blob";
@@ -118,110 +118,132 @@ function format(e: queryParameters) {
 export default class SaveUrl {
 
     public static async save(event) {
+        const instance = new SaveUrl(event);
         try {
-            const {
-                url,
-                content,
-                timeout = 15000,
-                mobile = true,
-                height = mobile ? 800 : 900,
-                width = mobile ? 400 : 1024,
-                deviceScaleFactor = mobile ? 2: 1,
-                pdf = null,
-                html = null,
-                stopTest = "window.pageReady",
-                output
-            } = format(event.queryStringParameters ?? {});
-
-            if(!url) {
-                throw new Error("No url specified");
-            }
-
-
-            console.log(`Received URL: ${url}`);
-
-            var { page, browser } = await SaveUrl.createPage({
-                mobile,
-                width,
-                height,
-                deviceScaleFactor,
-                html
-            });
-
-            if (url) {
-                await page.goto(url, { waitUntil: "networkidle2" });
-                console.log(`Url loaded.`);
-            } else {
-                await page.setContent(content, { waitUntil: "networkidle2"});
-                console.log(`Content loaded.`);
-            }
-
-            let start = Date.now();
-            let end = start + asNumber(timeout);
-            for (let index = start; index < end; index+=1000) {
-                await sleep(1000);
-                if(await page.evaluate(stopTest)) {
-                    break;
-                }
-            }
-
-            if (html) {
-
-                const text = await page.evaluate("window.document.documentElement.outerHTML");
-                return {
-                    statusCode: 200,
-                    headers: {
-                        "content-type": "text/html"
-                    },
-                    body: text
-                };
-            }
-
-            console.log(`Taking screenshot.`);
-
-            if (output) {
-                const filePath = await TempFileService.getTempFile(pdf ? ".pdf" : ".jpg");
-                if (pdf) {
-                    await page.pdf(pdf);
-                } else {
-                    await page.screenshot({ path: filePath.path });
-                }
-                return {
-                    statusCode: 200,
-                    body: {
-                        output
-                    }
-                };
-            }
-
-            const screen = pdf
-                ? await page.pdf(pdf) as Buffer
-                : await page.screenshot() as Buffer;
-
-            console.log(`Sending screenshot.`);
-            const body = screen.toString("base64");
-            await browser.close();
-
-            return {
-                statusCode: 200,
-                headers: {
-                    "content-type": pdf ? "application/pdf" : "image/png"
-                },
-                body,
-                isBase64Encoded: true
-            };
+            return await instance.save(event);
         } catch (e) {
             console.error(e);
             return {
                 statusCode: 500,
                 body: e.stack ?? e.toString()
             }
+        } finally {
+            await instance.dispose();
         }
+    }
+
+    private browser: Browser;
+
+    constructor(private event) {
 
     }
 
+    async save(event) {
 
-    private static async createPage({
+        const {
+            url,
+            content,
+            timeout = 15000,
+            mobile = true,
+            height = mobile ? 800 : 900,
+            width = mobile ? 400 : 1024,
+            deviceScaleFactor = mobile ? 2: 1,
+            pdf = null,
+            html = null,
+            stopTest = "window.pageReady",
+            output
+        } = format(event.queryStringParameters ?? {});
+
+        if(!url) {
+            throw new Error("No url specified");
+        }
+
+
+        console.log(`Received URL: ${url}`);
+
+        const { page } = await this.createPage({
+            mobile,
+            width,
+            height,
+            deviceScaleFactor,
+            html
+        });
+
+        if (url) {
+            await page.goto(url, { waitUntil: "networkidle2" });
+            console.log(`Url loaded.`);
+        } else {
+            await page.setContent(content, { waitUntil: "networkidle2"});
+            console.log(`Content loaded.`);
+        }
+
+        let start = Date.now();
+        let end = start + asNumber(timeout);
+        for (let index = start; index < end; index+=1000) {
+            await sleep(1000);
+            if(await page.evaluate(stopTest)) {
+                break;
+            }
+        }
+
+        if (html) {
+
+            const text = await page.evaluate("window.document.documentElement.outerHTML");
+            return {
+                statusCode: 200,
+                headers: {
+                    "content-type": "text/html"
+                },
+                body: text
+            };
+        }
+
+        console.log(`Taking screenshot.`);
+
+        if (output) {
+            const filePath = await TempFileService.getTempFile(pdf ? ".pdf" : ".jpg");
+            if (pdf) {
+                pdf.path = filePath.path;
+                await page.pdf(pdf);
+            } else {
+                await page.screenshot({ path: filePath.path });
+            }
+            await this.upload({ filePath: filePath.path , url: output});
+            return {
+                statusCode: 200,
+                body: {
+                    output
+                }
+            };
+        }
+
+        const screen = pdf
+            ? await page.pdf(pdf) as Buffer
+            : await page.screenshot() as Buffer;
+
+        console.log(`Sending screenshot.`);
+        const body = screen.toString("base64");
+
+        return {
+            statusCode: 200,
+            headers: {
+                "content-type": pdf ? "application/pdf" : "image/png"
+            },
+            body,
+            isBase64Encoded: true
+        };
+    }
+
+    async dispose() {
+        try {
+            await this.browser.close();
+        } catch (ex) {
+            console.log(ex);
+        }
+    }
+
+
+    private async createPage({
         mobile,
         width,
         height,
@@ -243,9 +265,9 @@ export default class SaveUrl {
 
         if (asBoolean(mobile)) {
             console.log(`User agent set.`);
-            page.setUserAgent(userAgent);
+            await page.setUserAgent(userAgent);
         }
-        page.setViewport({
+        await page.setViewport({
             width: asNumber(width),
             height: asNumber(height),
             deviceScaleFactor: asNumber(deviceScaleFactor)
@@ -265,7 +287,7 @@ export default class SaveUrl {
                 req.continue();
             });
         }
-
+        this.browser = browser;
         return { page, browser };
     }
 
