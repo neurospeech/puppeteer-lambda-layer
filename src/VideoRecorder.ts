@@ -1,3 +1,4 @@
+import { join } from "path";
 import { Page } from "puppeteer-core";
 import { PuppeteerScreenRecorder } from "puppeteer-screen-recorder";
 
@@ -41,7 +42,7 @@ export default class VideoRecorder {
         const viewPort = this.page.viewport();
         this.recorder = new PuppeteerScreenRecorder(this.page as any, {
             fps: 25,
-            // ffmpeg_Path: '<path of ffmpeg_path>' || null,
+            ffmpeg_Path: join(__dirname, "..",  "ffmpeg", "ffmpeg"),
             videoFrame: {
                 width: viewPort.width,
                 height: viewPort.height,

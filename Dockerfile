@@ -17,6 +17,10 @@ RUN apt-get update && \
 # Copy function code
 RUN mkdir -p ${FUNCTION_DIR}/
 
+RUN wget https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz && \
+    tar xvf ./ffmpeg-release-amd64-static.tar.xz --one-top-level=ffmpeg2 --strip-components 1 && \
+    mv ${FUNCTION_DIR}/ffmpeg2 ${FUNCTION_DIR}/ffmpeg
+
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 WORKDIR ${FUNCTION_DIR}
 RUN npm install aws-lambda-ric
