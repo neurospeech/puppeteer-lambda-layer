@@ -13,7 +13,7 @@
     "@azure/storage-blob": "^12.13.0",
     "@types/node": "^18.11.18",
     "mime-types": "^2.1.35",
-    "puppeteer-core": "^19.5.2",
+    "puppeteer-core": "^19.7.4",
     "robots-parser": "^3.0.1",
     "tmp-promise": "^3.0.3"
   },

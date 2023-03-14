@@ -20,7 +20,7 @@ jobs:
         node-version: 18.x
     - run: npm install
     - run: npm install puppeteer-screen-recorder
-    - run: npm install puppeteer@19.5.2
+    - run: npm install puppeteer
     - run: chmod -R +x node_modules/puppeteer-chromium
     - run: npm install -g typescript
     - run: tsc
