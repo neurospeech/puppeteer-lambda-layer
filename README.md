@@ -1,5 +1,11 @@
-# puppeteer-lambda-layer
-Create and setup Puppeteer Lambda Layer
+# Puppeteer Lambda Layer
+Create and setup Puppeteer Lambda Layer, this repository contains npm build and Dockerfile to build required image.
+
+# Steps
+
+1. Add Variable AWS_ACCESS_KEY_ID
+2. Add Secret AWS_SECRET_ACCESS_KEY
+3. Setup ECR Repository with name puppeteer-lambda
 
 ## Input
 
@@ -64,4 +70,36 @@ interface queryParameters {
     */
     botUserAgent?: string;
 };
+```
+
+## Tests
+
+### Get Html
+
+```json
+{
+  "body": {
+    "url": "https://github.com",
+    "html": "true"
+  }
+}
+```
+
+### Get Png
+```json
+{
+  "body": {
+    "url": "https://github.com",
+  }
+}
+```
+
+### Get Pdf
+```json
+{
+  "body": {
+    "url": "https://github.com",
+    "pdf": {}
+  }
+}
 ```
