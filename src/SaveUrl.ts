@@ -1,10 +1,11 @@
 import TempFileService from "./TempFileService";
 import { readFileSync, readdirSync, existsSync, promises } from "fs";
-import puppeteer, { Browser } from "puppeteer-core";
+import puppeteer, { Browser, Page } from "puppeteer-core";
 import { join } from "path";
 import * as mime from "mime-types";
 import { BlockBlobClient } from "@azure/storage-blob";
 import BotChecker from "./BotChecker";
+import VideoRecorder from "./VideoRecorder";
 
 // tslint:disable-next-line: max-line-length
 const userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/70.0.3538.75 Mobile/15E148 Safari/605.1";
@@ -88,6 +89,7 @@ interface queryParameters {
     width?: number | string;
     deviceScaleFactor?: number | string;
     pdf?: any;
+    video?: any;
     html?: string | boolean;
     stopTest?: string;
     output?: string;
@@ -142,6 +144,7 @@ export default class SaveUrl {
     }
 
     private browser: Browser;
+    private page: Page;
 
     constructor(private event) {
 
@@ -184,6 +187,7 @@ export default class SaveUrl {
             html = null,
             stopTest = "window.pageReady",
             output,
+            video,
             botCheck = false,
             botUserAgent
         } = event;
@@ -235,20 +239,15 @@ export default class SaveUrl {
         console.log(`Taking screenshot.`);
 
         if (output) {
-            const filePath = await TempFileService.getTempFile(pdf ? ".pdf" : ".jpg");
-            if (pdf) {
-                pdf.path = filePath.path;
-                await page.pdf(pdf);
-            } else {
-                await page.screenshot({ path: filePath.path });
-            }
-            await this.upload({ filePath: filePath.path , url: output});
+            const filePath = await this.saveOutput(pdf, video, output);
+            await this.upload({ filePath, url: output });
             return {
                 statusCode: 200,
+                headers: {},
                 body: {
                     output
                 }
-            };
+            };    
         }
 
         const screen = pdf
@@ -266,6 +265,31 @@ export default class SaveUrl {
             body,
             isBase64Encoded: true
         };
+    }
+
+    private async saveOutput(pdf: any, video: any, output: any) {
+        const page = this.page;
+        const filePath = (await TempFileService.getTempFile(
+                pdf
+                    ? ".pdf"
+                    : (video
+                            ? ".mp4"
+                            : ".jpg"))).path;
+        if (pdf) {
+            pdf.path = filePath;
+            await page.pdf(pdf);
+            return filePath;
+        } 
+
+        // video recorder....
+        if (!video) {
+            await page.screenshot({ path: filePath });
+            return filePath;
+        }
+
+        const recorder = new VideoRecorder(page, video, filePath);
+        await recorder.record();
+        return filePath;
     }
 
     async dispose() {
@@ -322,6 +346,7 @@ export default class SaveUrl {
             });
         }
         this.browser = browser;
+        this.page = page;
         return { page, browser };
     }
 
