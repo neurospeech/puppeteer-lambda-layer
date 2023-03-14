@@ -16,8 +16,6 @@ jobs:
     - uses: actions/checkout@v3
     - name: Use Node.js 18.x
       uses: actions/setup-node@v3
-      env:
-        PUPPETEER_CACHE_DIR: ./node_modules/puppeteer-chromium
       with:
         node-version: 18.x
         cache: 'npm'
@@ -25,7 +23,7 @@ jobs:
     - run: npm ci
     - run: npm uninstall puppeteer puppeteer-screen-recorder
     - run: npm install puppeteer
-    - run: chmod -R +x ./node_modules/puppeteer-chromium
+    - run: chmod -R +x node_modules/puppeteer-chromium
     - run: npm install puppeteer-screen-recorder
     - run: npm install -g typescript
     - run: tsc
