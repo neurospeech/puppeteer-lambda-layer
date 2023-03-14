@@ -18,6 +18,8 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 18.x
+        cache: 'npm'
+        cache-dependency-path: package.json
     - run: npm install
     - run: npm install puppeteer-screen-recorder
     - run: npm install puppeteer
