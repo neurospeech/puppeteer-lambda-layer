@@ -204,7 +204,8 @@ export default class SaveUrl {
             width,
             height,
             deviceScaleFactor,
-            html
+            html,
+            video
         });
 
         if (url) {
@@ -306,13 +307,15 @@ export default class SaveUrl {
         width,
         height,
         deviceScaleFactor,
-        html
+        html,
+        video
     }) {
         const browser = await puppeteer.launch({
             executablePath,
             userDataDir: "/tmp",
             // dumpio: true,
-            args: options
+            args: video ? [ ... options, "--autoplay-policy=no-user-gesture-required"] : options,
+            ignoreDefaultArgs: video ? ["--mute-audio"] : false
         });
 
         console.log(`Puppeteer Launched.`);
