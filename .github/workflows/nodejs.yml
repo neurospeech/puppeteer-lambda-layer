@@ -21,10 +21,16 @@ jobs:
         cache: 'npm'
         cache-dependency-path: package.json
     - run: npm ci
+      # puppeteer-screen-recorder installs puppeteer by default, so we need to delete both
     - run: npm uninstall puppeteer puppeteer-screen-recorder
+      # this will create fresh install in node_modules/puppeteer-chromium
     - run: npm install puppeteer
     - run: chmod -R +x node_modules/puppeteer-chromium
+    # Since puppeteer-screen-recorder will delete cache folder we will save it in parent folder
+    - run: mv node_modules/puppeteer-chromium puppeteer-chromium
     - run: npm install puppeteer-screen-recorder
+    # Moving puppeteer-chromium back to default cache folder
+    - run: mv puppeteer-chromium node_modules/puppeteer-chromium
     - run: npm install -g typescript
     - run: tsc
 
