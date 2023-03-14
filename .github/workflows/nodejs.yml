@@ -23,7 +23,8 @@ jobs:
         cache: 'npm'
         cache-dependency-path: package.json
     - run: npm ci
-    - run: npm install puppeteer --loglevel verbose
+    - run: npm uninstall puppeteer puppeteer-screen-recorder
+    - run: npm install puppeteer
     - run: chmod -R +x ./node_modules/puppeteer-chromium
     - run: npm install puppeteer-screen-recorder
     - run: npm install -g typescript
