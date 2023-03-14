@@ -14,12 +14,12 @@
     "@types/node": "^18.11.18",
     "mime-types": "^2.1.35",
     "puppeteer-core": "^19.5.2",
-    "puppeteer-screen-recorder": "^2.1.2",
     "robots-parser": "^3.0.1",
     "tmp-promise": "^3.0.3"
   },
   "devDependencies": {
     "@types/node": "^18.11.18",
+    "puppeteer-screen-recorder": "^2.1.2",
     "@types/node-fetch": "^2.6.2"
   }
 }
