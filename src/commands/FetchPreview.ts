@@ -35,9 +35,10 @@ export default class FetchPreview extends BaseCommand {
 
     protected async onRender({ output }) {
         let document: any;
+        let location: any;
         let url = await this.page.evaluate(() => document.head.querySelector(`meta[property="og:image"]`)?.content);
-        if (url) {
-            url = await this.page.evaluate(() => document.head.querySelector(`img`)?.src);
+        if (!url) {
+            url = await this.page.evaluate(() => new URL(document.head.querySelector(`img`)?.src, location.href).toString());
         }
 
         const file = await TempFileService.getTempFile(".jpg");

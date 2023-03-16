@@ -14,6 +14,9 @@ export default class TempFileService {
 
     
     public static async fetch(inputUrl: string, filePath: string = null) {
+
+        console.log(`Downloading ${inputUrl}`);
+
         const rs = await fetch(inputUrl);
         if (rs.status >= 300) {
             // error...
