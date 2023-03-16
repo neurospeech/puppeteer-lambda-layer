@@ -48,8 +48,7 @@ export default class FetchPreview extends BaseCommand {
             body: JSON.stringify({
                 url,
                 title,
-                description,
-                none
+                description
             }),
             headers: {
                 "content-type": "application/json"
