@@ -69,79 +69,12 @@ const options = [
     //   '--window-size=400,800',
 ];
 
-const asNumber = (n) => typeof n === "number" ? n : parseInt(n, 10);
-
-const asBoolean = (n) => typeof n === "boolean" ? n : (typeof n === "string" ? /true|yes/i.test(n) : false);
-
-const asJson = (n) => typeof n === "string" ? JSON.parse(n) : null;
-
-interface ICommandInput {
+export interface ICommandInput {
     url: string;
     filePath: string;
 }
 
-interface queryParameters {
-    url?: string;
-    content?: string;
-    timeout?: number | string;
-    mobile?: string | boolean;
-    height?: number | string;
-    width?: number | string;
-    deviceScaleFactor?: number | string;
-    pdf?: any;
-    video?: any;
-    html?: string | boolean;
-    stopTest?: string;
-    output?: string;
-    botCheck?: string | boolean;
-    botUserAgent?: string;
-};
-
-const queryParametersTranslator = {
-    timeout: asNumber,
-    mobile: asBoolean,
-    height: asNumber,
-    width: asNumber,
-    deviceScaleFactor: asNumber,
-    html: asBoolean,
-    pdf: asJson,
-    botCheck: asBoolean
-};
-
-function format(e: queryParameters) {
-    for (const key in queryParametersTranslator) {
-        if (Object.prototype.hasOwnProperty.call(queryParametersTranslator, key)) {
-            const element = queryParametersTranslator[key];
-            const v = e[key];
-            if (v !== void 0) {
-                e[key] = element(v);
-            }
-        }
-    }
-    return e;
-};
-
-export default class SaveUrl {
-
-    public static async save(event) {
-        const instance = new SaveUrl(event);
-        try {
-            const r = await instance.save(event);
-            if (typeof r.body === "object") {
-                (r.headers ??= {} as any)["content-type"] = "application/json";
-                r.body = JSON.stringify(r.body);
-            }
-            return r;
-        } catch (e) {
-            console.error(e);
-            return {
-                statusCode: 500,
-                body: e.stack ?? e.toString()
-            }
-        } finally {
-            await instance.dispose();
-        }
-    }
+export default class BaseCommand {
 
     private browser: Browser;
     private page: Page;
@@ -151,29 +84,10 @@ export default class SaveUrl {
     }
 
     async save(event) {
-        const params = format(event.queryStringParameters ?? event.body ?? {});
-
-        const {
-            botCheck,
-            botUserAgent,
-            url
-        } = params;
-
-        if (botCheck) {
-            const { canCrawl , content } = await BotChecker.check(url, botUserAgent);
-            delete params.url;
-            params.content = content;
-            if (!canCrawl) {
-                console.log("Bot denied succeeded");
-            } else {
-                console.log("Bot check succeeded");
-            }
-        }
-
-        return await this.postSave(params);
+        return await this.onSave(event);
     }
 
-    async postSave(event) {
+    protected async onSave(event) {
 
         const {
             url,
@@ -188,8 +102,6 @@ export default class SaveUrl {
             stopTest = "window.pageReady",
             output,
             video,
-            botCheck = false,
-            botUserAgent
         } = event;
 
         if(!url) {
@@ -214,25 +126,15 @@ export default class SaveUrl {
         } else {
             await page.setContent(content, { waitUntil: "networkidle2"});
             console.log(`Content loaded.`);
-
-            if (botCheck) {
-                const document: any = null;
-                const imgUrl = await page.evaluate(() => document.head.querySelectorAll(`meta[property="og:image"]`)?.[0]?.content);
-                if (imgUrl) {
-                    
-                }
-            }
         }
 
-        let start = Date.now();
-        let end = start + asNumber(timeout);
-        for (let index = start; index < end; index+=1000) {
-            await sleep(1000);
-            if(await page.evaluate(stopTest)) {
-                break;
-            }
-        }
+        await this.onBeforeRender(timeout, page, stopTest);
 
+        return await this.onRender({ html, pdf, video, output});
+    }
+
+    protected async onRender({ html, pdf, video, output}) {
+        const page = this.page;
         if (html) {
 
             const text = await page.evaluate("window.document.documentElement.outerHTML");
@@ -274,9 +176,21 @@ export default class SaveUrl {
             body,
             isBase64Encoded: true
         };
+
     }
 
-    private async saveOutput(pdf: any, video: any, output: any) {
+    protected async onBeforeRender(timeout: number, page: Page, stopTest: any) {
+        let start = Date.now();
+        let end = start + timeout;
+        for (let index = start; index < end; index += 1000) {
+            await sleep(1000);
+            if (await page.evaluate(stopTest)) {
+                break;
+            }
+        }
+    }
+
+    protected async saveOutput(pdf: any, video: any, output: any) {
         const page = this.page;
         const filePath = (await TempFileService.getTempFile(
                 pdf
@@ -332,14 +246,14 @@ export default class SaveUrl {
 
         console.log(`New Page created.`);
 
-        if (asBoolean(mobile)) {
+        if (mobile) {
             console.log(`User agent set.`);
             await page.setUserAgent(userAgent);
         }
         await page.setViewport({
-            width: asNumber(width),
-            height: asNumber(height),
-            deviceScaleFactor: asNumber(deviceScaleFactor)
+            width,
+            height,
+            deviceScaleFactor
         });
         console.log(`Screen Size set.`);
 
@@ -361,7 +275,7 @@ export default class SaveUrl {
         return { page, browser };
     }
 
-    async upload(x: ICommandInput) {
+    protected async upload(x: ICommandInput) {
         if (!existsSync(x.filePath)) {
             console.log(`File ${x.filePath} does not exist.`);
             return;
@@ -377,7 +291,7 @@ export default class SaveUrl {
         console.log(`File ${x.url} not supported for upload.`);
     }
 
-    async uploadAzure({url, filePath}: ICommandInput) {
+    protected async uploadAzure({url, filePath}: ICommandInput) {
         console.log(`Uploading ${url}`);
 
         const blobContentType = mime.lookup(filePath);

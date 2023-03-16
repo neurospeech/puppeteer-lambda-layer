@@ -5,11 +5,15 @@ export default class BotChecker {
 
     public static async check(url: string, userAgent: string) {
         const canCrawl = await this.checkRobots(url, userAgent);
+        let content = "";
+
+        if (canCrawl) {
+            content = await (await fetch(url)).text();
+        } else {
+
         const u = new URL(url);
         u.search = "";
-        const content = canCrawl
-            ? void 0
-            : `
+        content = `
 <html>
     <style>
         html, body {
@@ -30,6 +34,7 @@ export default class BotChecker {
     </body>
 </html>
 `;
+    }
         return {
             canCrawl,
             content
