@@ -12,6 +12,7 @@
   "dependencies": {
     "@azure/storage-blob": "^12.13.0",
     "@types/node": "^18.11.18",
+    "cheerio": "^1.0.0-rc.12",
     "mime-types": "^2.1.35",
     "puppeteer": "^19.7.5",
     "puppeteer-core": "^19.7.4",

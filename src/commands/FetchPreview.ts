@@ -3,6 +3,7 @@ import { Page } from "puppeteer-core";
 import BaseCommand from "../BaseCommand";
 import BotChecker from "../BotChecker";
 import TempFileService from "../TempFileService";
+import cheerio from "cheerio";
 
 export default class FetchPreview extends BaseCommand {
 
@@ -12,10 +13,10 @@ export default class FetchPreview extends BaseCommand {
 
         const {
             botUserAgent,
-            url
+            output,
         } = params;
 
-        const { canCrawl , content } = await BotChecker.check(url, botUserAgent);
+        const { canCrawl , content } = await BotChecker.check(params.url, botUserAgent);
         delete params.url;
         params.content = content;
         // disable all resources...
@@ -26,19 +27,11 @@ export default class FetchPreview extends BaseCommand {
             console.log("Bot check succeeded");
         }
 
-        return await this.onSave(params);
-    }
+        const $ = cheerio.load(content);
 
-    protected onBeforeRender() {
-        return Promise.resolve();
-    }
-
-    protected async onRender({ output }) {
-        let document: any;
-        let location: any;
-        let url = await this.page.evaluate(() => document.head.querySelector(`meta[property="og:image"]`)?.content);
+        let url = $(`meta[property=og\\:image]`).attr("content");
         if (!url) {
-            url = await this.page.evaluate(() => new URL(document.head.querySelector(`img`)?.src, location.href).toString());
+            url = $(`img`).attr("src");
         }
 
         const file = await TempFileService.getTempFile(".jpg");
@@ -53,6 +46,10 @@ export default class FetchPreview extends BaseCommand {
                 "content-type": "application/json"
             }
         };
+    }
+
+    dispose(): Promise<void> {
+        return Promise.resolve();
     }
     
 }
