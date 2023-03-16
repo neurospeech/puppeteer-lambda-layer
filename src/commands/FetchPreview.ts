@@ -1,10 +1,11 @@
+import { Page } from "puppeteer-core";
 import BaseCommand from "../BaseCommand";
 import BotChecker from "../BotChecker";
 
 export default class FetchPreview extends BaseCommand {
 
 
-    async onSave(event) {
+    async save(event) {
         const params = event;
 
         const {
@@ -17,6 +18,8 @@ export default class FetchPreview extends BaseCommand {
             const { canCrawl , content } = await BotChecker.check(url, botUserAgent);
             delete params.url;
             params.content = content;
+            // disable all resources...
+            params.html = true;
             if (!canCrawl) {
                 console.log("Bot denied succeeded");
             } else {
@@ -27,5 +30,12 @@ export default class FetchPreview extends BaseCommand {
         return await this.onSave(params);
     }
 
+    protected onBeforeRender(timeout: number, page: Page, stopTest: any) {
+        return Promise.resolve();
+    }
+
+    protected async onRender({ html, pdf, video, output }) {
+        return {};
+    }
     
 }
