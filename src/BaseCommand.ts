@@ -104,12 +104,13 @@ export default class BaseCommand {
             video,
         } = event;
 
-        if(!url) {
-            throw new Error("No url specified");
+        if (url) {
+            console.log(`Received URL: ${url}`);
+        } else if (content) {
+            console.log(`Setting content ${content.split("\n")[0]} ... `);
+        } else {
+            throw new Error("No url or content specified");
         }
-
-
-        console.log(`Received URL: ${url}`);
 
         const { page } = await this.createPage({
             mobile,
