@@ -77,7 +77,7 @@ export interface ICommandInput {
 export default class BaseCommand {
 
     private browser: Browser;
-    private page: Page;
+    protected page: Page;
 
     constructor(private event) {
 

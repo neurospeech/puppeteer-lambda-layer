@@ -1,5 +1,6 @@
+import BaseCommand from "./BaseCommand";
 import FetchPreview from "./commands/FetchPreview";
-import SaveUrl from "./SaveUrl";
+// import SaveUrl from "./SaveUrl";
 
 const asNumber = (n) => typeof n === "number" ? n : parseInt(n, 10);
 
@@ -58,7 +59,7 @@ export default class App {
 
         const instance = event.botCheck
             ? new FetchPreview(event)
-            : new SaveUrl(event);
+            : new BaseCommand(event);
 
         try {
             const r = await instance.save(event);
