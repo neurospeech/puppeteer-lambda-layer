@@ -34,6 +34,10 @@ export default class FetchPreview extends BaseCommand {
             url = $(`img`).attr("src");
         }
 
+        let title = $(`title`).text();
+
+        let description = $(`meta[name=description]`).attr("content") || $(`meta[property=og\\:description]`).attr("content");
+
         const file = await TempFileService.getTempFile(".jpg");
         await TempFileService.fetch(url, file.path);
 
@@ -41,7 +45,12 @@ export default class FetchPreview extends BaseCommand {
 
         return {
             statusCode: 200,
-            body: JSON.stringify(url),
+            body: JSON.stringify({
+                url,
+                title,
+                description,
+                none
+            }),
             headers: {
                 "content-type": "application/json"
             }
