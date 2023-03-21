@@ -1,8 +1,12 @@
+const { writeFileSync } = require("fs");
+
 const App = require("./dist/App").default;
 App.save({
     body: {
-        url: "https://www.youtube.com/watch?v=wsZZScXcQAU",
-        botCheck: true,
-        botUserAgent: "Google-Bot/1.0"
+        url: "https://gushcrm.com/feed/posts/512/20079?mode=preview"
     }
-}).then(console.log, console.error);
+}).then((s) => {
+
+    writeFileSync("test.png", s.body, "base64");
+
+}, console.error);

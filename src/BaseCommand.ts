@@ -181,11 +181,14 @@ export default class BaseCommand {
     }
 
     protected async onBeforeRender(timeout: number, page: Page, stopTest: any) {
+        console.log(`Waiting for pageReady`);
         let start = Date.now();
         let end = start + timeout;
         for (let index = start; index < end; index += 1000) {
             await sleep(1000);
             if (await page.evaluate(stopTest)) {
+                console.log(`Page is ready`);
+                await sleep(1000);
                 break;
             }
         }
