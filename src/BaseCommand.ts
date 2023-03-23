@@ -192,6 +192,10 @@ export default class BaseCommand {
                 break;
             }
         }
+
+        await page.waitForNetworkIdle({
+            timeout: 3000
+        });
     }
 
     protected async saveOutput(pdf: any, video: any, output: any) {
@@ -263,7 +267,6 @@ export default class BaseCommand {
 
         // if it is html...
         // disable image/css/font/video...
-
         if (html) {
             await page.setRequestInterception(true);
             page.on("request", (req) => {
