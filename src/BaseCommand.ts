@@ -258,13 +258,13 @@ export default class BaseCommand {
             console.log(`User agent set.`);
             await page.setUserAgent(userAgent);
         }
-        await page.setViewport({
+        const screenSize = {
             width,
             height,
             deviceScaleFactor
-        });
-        console.log(`Screen Size set.`);
-
+        };
+        await page.setViewport(screenSize);
+        console.log(`Screen Size set. ${JSON.stringify(screenSize)}`);
         // if it is html...
         // disable image/css/font/video...
         if (html) {
