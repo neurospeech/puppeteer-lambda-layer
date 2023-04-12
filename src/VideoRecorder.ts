@@ -23,7 +23,7 @@ export default class VideoRecorder {
         await this.page.exposeFunction("startRecording", async () => {
             await this.recorder.start(this.filePath);
             await this.page.evaluate(() => {
-                const ce = new CustomEvent("startRecording", { bubbles: true, cancelable: true});
+                const ce = new CustomEvent("startedRecording", { bubbles: true, cancelable: true});
                 document.body.dispatchEvent(ce);    
             });
             console.log(`Recording started`);
