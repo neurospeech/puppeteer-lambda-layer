@@ -18,9 +18,10 @@ export default class VideoRecorder {
     public async record() {
         await this.init();
 
-        // wait for start event...
-        await this.page.exposeFunction("startRecording", () => {
-            this.recorder.start(this.filePath);
+        console.log(`Waiting for start recording`);
+        await this.page.exposeFunction("startRecording", async () => {
+            await this.recorder.start(this.filePath);
+            console.log(`Recording started`);
         });
         await this.page.evaluate(() => {
             const ce = new CustomEvent("beginRecording", { bubbles: true, cancelable: true});
@@ -31,8 +32,9 @@ export default class VideoRecorder {
             window.startRecording();
         });
         return new Promise<void>((resolve, reject) => {
-            this.page.exposeFunction("stopRecording", () => {
-                this.recorder.stop();
+            this.page.exposeFunction("stopRecording", async () => {
+                await this.recorder.stop();
+                console.log(`Recording stopped`);
                 resolve();
             }).catch(reject);
         });
