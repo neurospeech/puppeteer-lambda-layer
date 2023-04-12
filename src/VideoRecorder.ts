@@ -16,11 +16,16 @@ export default class VideoRecorder {
     }
 
     public async record() {
+
         await this.init();
 
         console.log(`Waiting for start recording`);
         await this.page.exposeFunction("startRecording", async () => {
             await this.recorder.start(this.filePath);
+            await this.page.evaluate(() => {
+                const ce = new CustomEvent("recordingBegan", { bubbles: true, cancelable: true});
+                document.body.dispatchEvent(ce);    
+            });
             console.log(`Recording started`);
         });
         await this.page.evaluate(() => {
