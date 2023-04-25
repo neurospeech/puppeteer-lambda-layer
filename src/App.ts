@@ -119,6 +119,26 @@ async function generateTempFile(event: IEvent) {
 
     event.outputExt = ext;
 
+    const {
+        timeout = 15000,
+        mobile = true,
+        height = mobile ? 800 : 900,
+        width = mobile ? 400 : 1024,
+        deviceScaleFactor = mobile ? 2: 1,
+        pdf = null,
+        html = null,
+        stopTest = "window.pageReady",
+    } = event;
+
+    event.mobile = mobile;
+    event.height = height;
+    event.width = width;
+    event.deviceScaleFactor = deviceScaleFactor;
+    event.pdf = pdf;
+    event.html = html;
+    event.stopTest = stopTest;
+    event.timeout = timeout;
+
     if (event.output) {
         return;
     }
