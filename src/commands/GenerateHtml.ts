@@ -4,9 +4,14 @@ import Command from "./Command";
 
 export default class GenerateHtml extends Command {
 
-    async render({ page, outputFile }: IEvent) {
+    async render(event: IEvent) {
+        const {page, outputFile } = event;
         const text = await page.evaluate("window.document.documentElement.outerHTML") as string;
-        writeFileSync(outputFile, text , "utf-8");        
+        if (outputFile) {
+            writeFileSync(outputFile, text , "utf-8");        
+        } else {
+            event.result = text;
+        }
     }
 
     async interceptResourceLoader({ html, page}: IEvent) {

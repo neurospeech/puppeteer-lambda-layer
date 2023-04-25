@@ -83,7 +83,7 @@ export default abstract class Command {
         }
         await this.render(event);
         await this.uploadFile(event);
-        return { output: event.output };
+        return event.result ?? { output: event.output};
     }
     
     async uploadFile({ outputFile: filePath , output: url}: IEvent) {
