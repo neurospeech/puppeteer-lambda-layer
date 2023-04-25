@@ -1,5 +1,13 @@
+import { BlobSASPermissions, BlobServiceClient, BlockBlobClient } from "@azure/storage-blob";
 import BaseCommand from "./BaseCommand";
+import Command from "./commands/Command";
 import FetchPreview from "./commands/FetchPreview";
+import GenerateImage from "./commands/GenerateImage";
+import GeneratePDF from "./commands/GeneratePDF";
+import GenerateVideo from "./commands/GenerateVideo";
+import { IEvent } from "./IEvent";
+import { parse } from "path";
+import GenerateHtml from "./commands/GenerateHtml";
 // import SaveUrl from "./SaveUrl";
 
 const asNumber = (n) => typeof n === "number" ? n : parseInt(n, 10);
@@ -55,19 +63,40 @@ export default class App {
 
     public static async save(event) {
 
+        event.output ??= await generateTempFile(event);
+
+        event.outputExt = parse(event.output).ext;
+
         event = format(event.queryStringParameters ?? event.body ?? {}) as queryParameters;
 
-        const instance = event.botCheck
-            ? new FetchPreview(event)
-            : new BaseCommand(event);
+        if (event.botCheck) {
+            return this.run(new FetchPreview(), event);
+        }
 
+        if(event.video) {
+            return this.run(new GenerateVideo(), event);
+        }
+
+        if(event.pdf) {
+            return this.run(new GeneratePDF(), event);
+        }
+
+        if(event.html) {
+            return this.run(new GenerateHtml(), event);
+        }
+
+        return this.run(new GenerateImage(), event);
+    }
+
+    public static async run(instance: Command, event) {
         try {
-            const r = await instance.save(event);
-            if (typeof r.body === "object") {
-                (r.headers ??= {} as any)["content-type"] = "application/json";
-                r.body = JSON.stringify(r.body);
-            }
-            return r;
+            const r = await instance.run(event);
+            return {
+                body: JSON.stringify(r),
+                headers: {
+                    "content-type": "application/json"
+                }
+            };
         } catch (e) {
             console.error(e);
             return {
@@ -75,7 +104,32 @@ export default class App {
                 body: e.stack ?? e.toString()
             }
         } finally {
-            await instance.dispose();
+            await instance.dispose(event);
         }
+
     }
 }
+
+async function generateTempFile(event: IEvent): Promise<any> {
+    const key = process.env.azure_blob_storage_connection;
+    const bc = BlobServiceClient.fromConnectionString(key);
+    const tc = bc.getContainerClient("tmp");
+
+    let ext = ".jpg";
+    if (event.html) {
+        ext = ".html";
+    } else if(event.video) {
+        ext = ".mp4";
+    } else if(event.pdf) {
+        ext = ".pdf";
+    }
+
+    const b = tc.getBlobClient("pg/" + Date.now() + "-" + Date.now() + "/file" + ext);
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return await b.generateSasUrl({
+        permissions: BlobSASPermissions.from({ read: true, write: true }),
+        expiresOn: tomorrow
+    });
+}
+

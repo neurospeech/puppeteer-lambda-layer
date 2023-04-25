@@ -1,14 +1,22 @@
 import fetch from "node-fetch";
 import { Page } from "puppeteer-core";
-import BaseCommand from "../BaseCommand";
+import Command from "./Command";
 import BotChecker from "../BotChecker";
 import TempFileService from "../TempFileService";
 import cheerio from "cheerio";
+import { IEvent } from "../IEvent";
 
-export default class FetchPreview extends BaseCommand {
+export default class FetchPreview extends Command {
+
+    save(event: IEvent): Promise<string> {
+        throw new Error("Method not implemented.");
+    }
+    render(event: IEvent): Promise<any> {
+        throw new Error("Method not implemented.");
+    }
 
 
-    async save(event) {
+    async run(event) {
         const params = event;
 
         const {
@@ -44,16 +52,10 @@ export default class FetchPreview extends BaseCommand {
         await this.upload({ url: output , filePath: file.path});
 
         return {
-            statusCode: 200,
-            body: JSON.stringify({
                 url,
                 title,
                 description
-            }),
-            headers: {
-                "content-type": "application/json"
-            }
-        };
+            };
     }
 
     dispose(): Promise<void> {

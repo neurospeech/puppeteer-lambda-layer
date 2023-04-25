@@ -7,6 +7,6 @@ App.save({
     }
 }).then((s) => {
 
-    writeFileSync("test.png", s.body, "base64");
+    console.log(s);
 
 }, console.error);

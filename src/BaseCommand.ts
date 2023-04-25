@@ -79,7 +79,7 @@ export default class BaseCommand {
     private browser: Browser;
     protected page: Page;
 
-    constructor(private event) {
+    constructor() {
 
     }
 
