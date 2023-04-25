@@ -11,6 +11,10 @@ const executablePath = (() => {
     const root = join(__dirname, "..", "..", "puppeteer-chromium", "chrome");
     // get first folder...
     const first = readdirSync(root)[0];
+    const winPath = join(root, first, "chrome-win", "chrome.exe");
+    if (existsSync(winPath)) {
+        return winPath;
+    }
     return join(root, first, "chrome-linux", "chrome");
 })();
 

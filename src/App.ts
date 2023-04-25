@@ -1,20 +1,17 @@
 import { BlobSASPermissions, BlobServiceClient, BlockBlobClient } from "@azure/storage-blob";
-import BaseCommand from "./BaseCommand";
 import Command from "./commands/Command";
 import FetchPreview from "./commands/FetchPreview";
 import GenerateImage from "./commands/GenerateImage";
 import GeneratePDF from "./commands/GeneratePDF";
 import GenerateVideo from "./commands/GenerateVideo";
 import { IEvent } from "./IEvent";
-import { parse } from "path";
 import GenerateHtml from "./commands/GenerateHtml";
-// import SaveUrl from "./SaveUrl";
 
 const asNumber = (n) => typeof n === "number" ? n : parseInt(n, 10);
 
 const asBoolean = (n) => typeof n === "boolean" ? n : (typeof n === "string" ? /true|yes/i.test(n) : false);
 
-const asJson = (n) => typeof n === "string" ? JSON.parse(n) : null;
+const asJson = (n) => typeof n === "string" ? JSON.parse(n) : (typeof n === "object" ? n : null);
 
 
 interface queryParameters {
@@ -42,7 +39,8 @@ const queryParametersTranslator = {
     deviceScaleFactor: asNumber,
     html: asBoolean,
     pdf: asJson,
-    botCheck: asBoolean
+    botCheck: asBoolean,
+    video: asJson
 };
 
 function format(e: queryParameters): queryParameters {
@@ -63,11 +61,9 @@ export default class App {
 
     public static async save(event) {
 
-        event.output ??= await generateTempFile(event);
-
-        event.outputExt = parse(event.output).ext;
-
         event = format(event.queryStringParameters ?? event.body ?? {}) as queryParameters;
+
+        event.output ??= await generateTempFile(event);
 
         if (event.botCheck) {
             return this.run(new FetchPreview(), event);
@@ -123,6 +119,8 @@ async function generateTempFile(event: IEvent): Promise<any> {
     } else if(event.pdf) {
         ext = ".pdf";
     }
+
+    event.outputExt = ext;
 
     const b = tc.getBlobClient("pg/" + Date.now() + "-" + Date.now() + "/file" + ext);
     const tomorrow = new Date();
