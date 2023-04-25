@@ -63,7 +63,7 @@ export default class App {
 
         event = format(event.queryStringParameters ?? event.body ?? {}) as queryParameters;
 
-        event.output ??= await generateTempFile(event);
+        await generateTempFile(event);
 
         if (event.botCheck) {
             return this.run(new FetchPreview(), event);
@@ -106,10 +106,7 @@ export default class App {
     }
 }
 
-async function generateTempFile(event: IEvent): Promise<any> {
-    const key = process.env.azure_blob_storage_connection;
-    const bc = BlobServiceClient.fromConnectionString(key);
-    const tc = bc.getContainerClient("tmp");
+async function generateTempFile(event: IEvent) {
 
     let ext = ".jpg";
     if (event.html) {
@@ -122,10 +119,17 @@ async function generateTempFile(event: IEvent): Promise<any> {
 
     event.outputExt = ext;
 
+    if (event.output) {
+        return;
+    }
+
+    const key = process.env.azure_blob_storage_connection;
+    const bc = BlobServiceClient.fromConnectionString(key);
+    const tc = bc.getContainerClient("tmp");
     const b = tc.getBlobClient("pg/" + Date.now() + "-" + Date.now() + "/file" + ext);
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    return await b.generateSasUrl({
+    event.output = await b.generateSasUrl({
         permissions: BlobSASPermissions.from({ read: true, write: true }),
         expiresOn: tomorrow
     });
