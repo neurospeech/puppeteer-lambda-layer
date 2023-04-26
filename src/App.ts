@@ -143,6 +143,10 @@ async function generateTempFile(event: IEvent) {
         return;
     }
 
+    if (event.html) {
+        return;
+    }
+
     const key = process.env.azure_blob_storage_connection;
     const bc = BlobServiceClient.fromConnectionString(key);
     const tc = bc.getContainerClient("tmp");
