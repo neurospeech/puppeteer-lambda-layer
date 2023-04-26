@@ -1,40 +1,58 @@
 let document: any;
 let window: any;
 
-export default function FlattenStyles() {
+export default 
+function FlattenStyles() {
 
-    function setStyle(theElement) {
-        var els = theElement.children;
-        for(var i = 0, maxi = els.length; i < maxi; i++)
-        {
-            setStyle(els[i]);
-    
-            var defaultElem = document.createElement(els[i].nodeName)
-            var child = document.body.appendChild(defaultElem);
-            var defaultsStyles = window.getComputedStyle(defaultElem,null);     
-    
-            var computed = window.getComputedStyle(els[i],null).cssText;
-    
-            for(var j = 0, maxj = defaultsStyles.length; j < maxj; j++)
-            {
-                var defaultStyle = defaultsStyles[j] + ": " + defaultsStyles.getPropertyValue(""+defaultsStyles[j]) + ";"
-                if(computed.startsWith(defaultStyle)) {
-                    computed = computed.substring(defaultStyle.length);
-                } else {
-                    computed = computed.replace(" " + defaultStyle, "");
-                }
+    const defaultStyles = new Map();
+
+    function getDefaultStyles(e) {
+        let d = defaultStyles.get(e.tagName);
+        if (!d) {
+            d = {};
+            const de = document.createElement(e.tagName);
+            document.body.appendChild(de);
+            const computedStyle = window.getComputedStyle(de);
+            // eslint-disable-next-line @typescript-eslint/prefer-for-of
+            for (let index = 0; index < computedStyle.length; index++) {
+                const key = computedStyle[index];
+                const value = computedStyle[key];
+                d[key] = value;
             }
-    
-            child.remove();
-    
-            els[i].setAttribute("style", computed);
+            defaultStyles.set(e.tagName, d);
+        }
+        return d;
+    }
+
+    function setStyle(e) {
+
+        const ds = getDefaultStyles(e);
+
+        const cs = window.getComputedStyle(e);
+
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
+        for (let index = 0; index < cs.length; index++) {
+            const key = cs[index];
+            const value = cs[key];
+            if (ds[key] === value) {
+                continue;
+            }
+            e.style[key] = value;
+        }
+
+        const children = e.children;
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
+        for (let index = 0; index < children.length; index++) {
+            const element = children[index];
+            setStyle(element as any);
         }
     }
 
-    const array = document.body.querySelectorAll("*");
+    const array = document.body.children;
+    // eslint-disable-next-line @typescript-eslint/prefer-for-of
     for (let index = 0; index < array.length; index++) {
         const element = array[index];
-        setStyle(element);
+        setStyle(element as any);
     }
-    
+
 }
