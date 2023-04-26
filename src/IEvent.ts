@@ -9,7 +9,7 @@ export interface IEvent {
     width?: number;
     deviceScaleFactor?: number;
     pdf?: any;
-    html?: any;
+    html?: "html" | "body" | boolean;
     flattenStyle?: boolean;
     stopTest?: string;
     output?: string;

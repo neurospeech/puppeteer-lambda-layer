@@ -12,7 +12,11 @@ export default class GenerateHtml extends Command {
             await page.evaluate(FlattenStyles);
         }
 
-        const text = await page.evaluate("window.document.documentElement.outerHTML") as string;
+        const { html } = event;
+
+        const text = html === "body"
+            ? await page.evaluate("window.document.body.innerHTML") as string
+            : await page.evaluate("window.document.documentElement.outerHTML") as string;
         if (outputFile) {
             console.log(`Saving html to ${outputFile}`);
             writeFileSync(outputFile, text , "utf-8");        
