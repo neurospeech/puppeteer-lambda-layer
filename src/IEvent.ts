@@ -15,6 +15,7 @@ export interface IEvent {
     output?: string;
     outputExt?: string;
     outputFile?: string;
+    quality?: number;
     video?: any;
     result?: any;
     page?: Page;
