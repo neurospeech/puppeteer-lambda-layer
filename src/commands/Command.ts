@@ -82,9 +82,7 @@ export default abstract class Command {
 
     public async run(event: IEvent): Promise<any> {
         await this.init(event);
-        if (event.outputExt && !event.outputFile) {
-            event.outputFile = (await TempFileService.getTempFile(event.outputExt)).path
-        }
+        await this.generateTempFile(event);
         await this.render(event);
         await this.uploadFile(event);
         return event.result ?? { output: event.output};
@@ -103,6 +101,12 @@ export default abstract class Command {
             await browser.close();
         } catch (ex) {
             console.log(ex);
+        }
+    }
+
+    async generateTempFile(event: IEvent) {
+        if (event.outputExt && !event.outputFile) {
+            event.outputFile = (await TempFileService.getTempFile(event.outputExt)).path;
         }
     }
 

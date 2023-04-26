@@ -22,6 +22,12 @@ export default class GenerateHtml extends Command {
         }
     }
 
+    async generateTempFile(event: IEvent): Promise<void> {
+        if(event.output) {
+            await super.generateTempFile(event);
+        }
+    }
+
     async interceptResourceLoader({ page, flattenStyle }: IEvent) {
         await page.setRequestInterception(true);
         if (flattenStyle) {
