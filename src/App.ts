@@ -117,7 +117,7 @@ async function generateTempFile(event: IEvent) {
         ext = ".pdf";
     }
 
-    event.outputExt = ext;
+    event.outputExt ||= ext;
 
     const {
         timeout = 15000,
