@@ -20,6 +20,7 @@ function FlattenStyles() {
                 d[key] = value;
             }
             defaultStyles.set(e.tagName, d);
+            de.remove();
         }
         return d;
     }
