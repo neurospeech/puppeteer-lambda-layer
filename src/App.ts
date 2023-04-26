@@ -37,7 +37,6 @@ const queryParametersTranslator = {
     height: asNumber,
     width: asNumber,
     deviceScaleFactor: asNumber,
-    html: asBoolean,
     pdf: asJson,
     botCheck: asBoolean,
     video: asJson
