@@ -30,6 +30,11 @@ export default function FlattenStyles() {
             els[i].setAttribute("style", computed);
         }
     }
+
+    const array = document.body.querySelectorAll("*");
+    for (let index = 0; index < array.length; index++) {
+        const element = array[index];
+        setStyle(element);
+    }
     
-    setStyle(document.getElementsByTagName("body")[0]);    
 }
