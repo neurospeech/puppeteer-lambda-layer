@@ -6,7 +6,11 @@ export default class GenerateImage extends Command {
     async render({ page, outputFile: path, output, quality = 95 }: IEvent) {
 
         console.log(`Saving screenshot to ${path}`);
-        await page.screenshot({ path, quality });
+        if (path.endsWith(".png")) {
+            await page.screenshot({ path });
+        } else {
+            await page.screenshot({ path, quality });
+        }
 
         return output;
     }
