@@ -35,6 +35,8 @@ export default class FetchPreview extends Command {
             console.log("Bot check succeeded");
         }
 
+        console.log(params.content);
+
         const $ = cheerio.load(content);
 
         let url = $(`meta[property=og\\:image]`).attr("content");
