@@ -20,11 +20,12 @@ export default class FetchPreview extends Command {
         const params = event;
 
         const {
+            botCheck,
             botUserAgent,
             output,
         } = params;
 
-        const { canCrawl , content } = await BotChecker.check(params.url, botUserAgent);
+        const { canCrawl , content } = await BotChecker.check(params.url, botUserAgent, botCheck);
         delete params.url;
         params.content = content;
         // disable all resources...

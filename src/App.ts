@@ -64,7 +64,7 @@ export default class App {
 
         await generateTempFile(event);
 
-        if (event.botCheck) {
+        if (event.botCheck || event.preview) {
             return this.run(new FetchPreview(), event);
         }
 

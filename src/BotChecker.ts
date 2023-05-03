@@ -3,8 +3,8 @@ import robotsParser from "robots-parser";
 
 export default class BotChecker {
 
-    public static async check(url: string, userAgent: string) {
-        const canCrawl = await this.checkRobots(url, userAgent);
+    public static async check(url: string, userAgent: string, botCheck = false) {
+        const canCrawl = !botCheck ? true : await this.checkRobots(url, userAgent);
         let content = "";
 
         if (canCrawl) {
