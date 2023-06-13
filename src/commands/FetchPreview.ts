@@ -45,7 +45,7 @@ export default class FetchPreview extends Command {
             url = $(`img`).attr("src");
         }
 
-        let title = $(`title`).text();
+        let title = $(`head > title`).text();
 
         let description = $(`meta[name=description]`).attr("content") || $(`meta[property=og\\:description]`).attr("content");
 

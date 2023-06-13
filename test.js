@@ -23,7 +23,7 @@ async function runTests() {
     //     pdf: {}
     // });
     await runAndLog({
-        url: "https://www.linkedin.com/posts/blu-swan-media-b2399a135_our-new-model-kate-is-in-town-bookings-activity-7059447602848612353-2jZM?utm_source=share&utm_medium=member_desktop",
+        url: "https://pitchfork.com/news/coachella-announces-dates-for-2024-festival/",
         preview: true,
         botUserAgent: "Google-Bot/1.1"
     });
