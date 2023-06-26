@@ -82,6 +82,9 @@ export default abstract class Command {
 
     public async run(event: IEvent): Promise<any> {
         await this.init(event);
+        if (this.failed) {
+            throw new Error(this.failed);
+        }
         await this.generateTempFile(event);
         await this.render(event);
         await this.uploadFile(event);
@@ -95,6 +98,8 @@ export default abstract class Command {
     }
 
     abstract render(event: IEvent): Promise<any>;
+
+    protected failed: string;
 
     async dispose({ browser }: IEvent) {
         try {
@@ -162,6 +167,24 @@ export default abstract class Command {
 
         event.browser = browser;
         event.page = page;
+
+        // page.on("pageerror", (e) => this.pageError = e );
+        page.on("requestfailed", (e) => {
+            if (e.response()?.status() <= 409) {
+                return;
+            }
+            try {
+                this.failed = `Request failed for ${e.url()}\r\n${e.failure().errorText}`;
+                const response = e.response();
+                if (response) {
+                    response.text().then((r) => {
+                        this.failed += `\r\n${r}`;
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        })
 
         // if it is html...
         // disable image/css/font/video...
