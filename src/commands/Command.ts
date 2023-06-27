@@ -169,22 +169,22 @@ export default abstract class Command {
         event.page = page;
 
         // page.on("pageerror", (e) => this.pageError = e );
-        page.on("requestfailed", (e) => {
-            if (e.response()?.status() <= 409) {
-                return;
-            }
-            try {
-                this.failed = `Request failed for ${e.url()}\r\n${e.failure().errorText}`;
-                const response = e.response();
-                if (response) {
-                    response.text().then((r) => {
-                        this.failed += `\r\n${r}`;
-                    });
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        })
+        // page.on("requestfailed", (e) => {
+        //     if (e.response()?.status() <= 409) {
+        //         return;
+        //     }
+        //     try {
+        //         this.failed = `Request failed for ${e.url()}\r\n${e.failure().errorText}`;
+        //         const response = e.response();
+        //         if (response) {
+        //             response.text().then((r) => {
+        //                 this.failed += `\r\n${r}`;
+        //             });
+        //         }
+        //     } catch (error) {
+        //         console.error(error);
+        //     }
+        // })
 
         // if it is html...
         // disable image/css/font/video...
