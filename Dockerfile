@@ -51,8 +51,13 @@ COPY dist ${FUNCTION_DIR}/dist
 COPY package.json ${FUNCTION_DIR}
 COPY src ${FUNCTION_DIR}/src
 COPY index.js ${FUNCTION_DIR}
+COPY puppeteer.config.cjs ${FUNCTION_DIR}
 COPY node_modules ${FUNCTION_DIR}/node_modules
-COPY puppeteer-chromium ${FUNCTION_DIR}/puppeteer-chromium
+
+RUN npm uninstall puppeteer puppeteer-screen-recorder
+RUN npm install puppeteer
+RUN chmod -R +x puppeteer-chromium
+RUN npm install puppeteer-screen-recorder
 
 WORKDIR ${FUNCTION_DIR}
 

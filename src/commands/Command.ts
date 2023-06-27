@@ -15,7 +15,7 @@ const executablePath = (() => {
     if (existsSync(winPath)) {
         return winPath;
     }
-    return join(root, first, "chrome-linux", "chrome");
+    return join(root, first, "chrome-linux64", "chrome");
 })();
 
 // const executablePath = "/usr/bin/chromium";
