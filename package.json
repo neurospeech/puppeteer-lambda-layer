@@ -14,6 +14,7 @@
     "@types/node": "^18.11.18",
     "cheerio": "^1.0.0-rc.12",
     "mime-types": "^2.1.35",
+    "wrap-ansi": "^8.1.0",
     "puppeteer": "20.7.3",
     "puppeteer-core": "^20.7.3",
     "puppeteer-screen-recorder": "^2.1.2",
