@@ -169,6 +169,24 @@ export default abstract class Command {
         event.page = page;
 
         // page.on("pageerror", (e) => this.pageError = e );
+        this.TrackError(page);
+
+        // if it is html...
+        // disable image/css/font/video...
+        await this.interceptResourceLoader(event);
+
+        if (url) {
+            await page.goto(url, { waitUntil: "networkidle2" });
+            console.log(`Url loaded.`);
+        } else {
+            await page.setContent(content, { waitUntil: "networkidle2"});
+            console.log(`Content loaded.`);
+        }
+
+        await this.waitForPageToLoad(event);
+    }
+
+    protected TrackError(page: Page) {
         page.on("requestfailed", (e) => {
             if (e.response()?.status() <= 409) {
                 return;
@@ -184,21 +202,7 @@ export default abstract class Command {
             } catch (error) {
                 console.error(error);
             }
-        })
-
-        // if it is html...
-        // disable image/css/font/video...
-        await this.interceptResourceLoader(event);
-
-        if (url) {
-            await page.goto(url, { waitUntil: "networkidle2" });
-            console.log(`Url loaded.`);
-        } else {
-            await page.setContent(content, { waitUntil: "networkidle2"});
-            console.log(`Content loaded.`);
-        }
-
-        await this.waitForPageToLoad(event);
+        });
     }
 
     async waitForPageToLoad({ timeout, page, stopTest }: IEvent) {

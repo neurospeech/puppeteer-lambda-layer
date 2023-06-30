@@ -2,6 +2,7 @@ import { writeFileSync } from "fs";
 import { IEvent } from "../IEvent";
 import Command from "./Command";
 import FlattenStyles from "./html/FlattenStyles";
+import { Page } from "puppeteer-core";
 
 export default class GenerateHtml extends Command {
 
@@ -30,6 +31,10 @@ export default class GenerateHtml extends Command {
         if(event.output) {
             await super.generateTempFile(event);
         }
+    }
+
+    protected TrackError(page: Page): void {
+        
     }
 
     async interceptResourceLoader({ page, flattenStyle }: IEvent) {
