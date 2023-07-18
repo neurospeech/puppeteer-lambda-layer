@@ -20,7 +20,7 @@ export default class GeneratePDF extends Command {
             isLandscape
         } = page.viewport();
 
-        page.setViewport({
+        await page.setViewport({
             width,
             height,
             isMobile,
