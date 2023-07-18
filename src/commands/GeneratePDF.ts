@@ -17,6 +17,7 @@ export default class GeneratePDF extends Command {
             ? { ... pdf, path}
             : { path };
 
+        pf.format ??= "A4";
         pf.height = maxHeight + "px";
 
         await page.pdf(pf);
