@@ -27,7 +27,9 @@ export default class GeneratePDF extends Command {
             deviceScaleFactor,
             hasTouch,
             isLandscape
-        })
+        });
+        
+        await page.emulateMediaType("screen");
         
         const pf = typeof pdf === "object"
             ? { ... pdf, path}
