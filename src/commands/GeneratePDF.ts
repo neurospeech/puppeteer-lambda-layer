@@ -3,16 +3,31 @@ import Command from "./Command";
 
 let document: any;
 
-function updatePageSize() {
-    const maxHeight =  Array.from<any>(document.all).reduce((a, c) => Math.max(c.scrollHeight , a) , 0);
-    document.body.style.height = `${maxHeight}px`;
-    document.body.style.overflow = "auto";
+function getMaxPageSize() {
+    return Array.from<any>(document.all).reduce((a, c) => Math.max(c.scrollHeight , a) , 0);
 }
 
 export default class GeneratePDF extends Command {
     async render({ outputFile: path, page, output, pdf }: IEvent) {
 
-        await page.evaluate(updatePageSize);
+        const height = await page.evaluate(getMaxPageSize);
+
+        const {
+            width,
+            isMobile,
+            deviceScaleFactor,
+            hasTouch,
+            isLandscape
+        } = page.viewport();
+
+        page.setViewport({
+            width,
+            height,
+            isMobile,
+            deviceScaleFactor,
+            hasTouch,
+            isLandscape
+        })
         
         const pf = typeof pdf === "object"
             ? { ... pdf, path}
