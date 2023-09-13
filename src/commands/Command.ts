@@ -206,9 +206,10 @@ export default abstract class Command {
     }
 
     async waitForPageToLoad({ timeout, page, stopTest }: IEvent) {
-        console.log(`Waiting for pageReady`);
+        console.log(`Waiting for pageReady till ${timeout}ms`);
         let start = Date.now();
         let end = start + timeout;
+        let isPageReady = false;
         for (let index = start; index < end; index += 1000) {
             await sleep(1000);
             if (await page.evaluate(stopTest)) {
@@ -218,8 +219,11 @@ export default abstract class Command {
             }
         }
 
+        timeout = 3000;
+
+        console.log(`Waiting for idle network in ${timeout}ms`)
         await page.waitForNetworkIdle({
-            timeout: 3000
+            timeout
         });
     }
 

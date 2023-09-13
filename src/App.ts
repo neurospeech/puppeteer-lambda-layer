@@ -107,6 +107,12 @@ export default class App {
 
 async function generateTempFile(event: IEvent) {
 
+    try {
+        console.log(`Event: ${JSON.stringify(event, undefined, 2)}`);
+    } catch {
+
+    }
+
     let ext = ".jpg";
     if (event.html) {
         ext = ".html";
