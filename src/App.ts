@@ -7,7 +7,13 @@ import GenerateVideo from "./commands/GenerateVideo";
 import { IEvent } from "./IEvent";
 import GenerateHtml from "./commands/GenerateHtml";
 
-const asNumber = (n) => typeof n === "number" ? n : parseInt(n, 10);
+const asNumber = (n) => {
+    if (n === void 0 || n === null || n === "null") {
+        return void 0;
+    }
+    n = typeof n === "number" ? n : parseInt(n, 10);
+    return isNaN(n) ? void 0: n;
+}
 
 const asBoolean = (n) => typeof n === "boolean" ? n : (typeof n === "string" ? /true|yes/i.test(n) : false);
 
