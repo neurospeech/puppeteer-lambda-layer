@@ -125,7 +125,7 @@ async function generateTempFile(event: IEvent) {
     event.outputExt ||= ext;
 
     const {
-        timeout = 15000,
+        timeout,
         mobile = true,
         height = mobile ? 800 : 900,
         width = mobile ? 400 : 1024,
@@ -142,7 +142,7 @@ async function generateTempFile(event: IEvent) {
     event.pdf = pdf;
     event.html = html;
     event.stopTest = stopTest;
-    event.timeout = timeout;
+    event.timeout = timeout ?? 15000;
 
     if (event.output) {
         return;

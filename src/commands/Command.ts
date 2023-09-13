@@ -119,15 +119,10 @@ export default abstract class Command {
         const {
             url,
             content,
-            timeout = 15000,
             mobile = true,
             height = mobile ? 800 : 900,
             width = mobile ? 400 : 1024,
             deviceScaleFactor = mobile ? 2: 1,
-            pdf = null,
-            html = null,
-            stopTest = "window.pageReady",
-            output,
             video,
         } = event;
 
