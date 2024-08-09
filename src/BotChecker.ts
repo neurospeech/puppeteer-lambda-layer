@@ -8,7 +8,7 @@ export default class BotChecker {
         let content = "";
 
         if (canCrawl) {
-            content = await (await fetch(url)).text();
+            content = await (await fetch(url, { headers: { "user-agent": userAgent } })).text();
         } else {
 
         const u = new URL(url);
