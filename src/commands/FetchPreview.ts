@@ -36,13 +36,15 @@ export default class FetchPreview extends Command {
             console.log("Bot check succeeded");
         }
 
-        console.log(params.content);
-
         const $ = cheerio.load(content);
 
         let url = $(`meta[property=og\\:image]`).attr("content");
         if (!url) {
             url = $(`img`).attr("src");
+        }
+
+        if (!url) {
+            // we might need to process html using JSDOM
         }
 
         let title = $(`head > title`).text();
