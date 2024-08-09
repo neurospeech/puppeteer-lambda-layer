@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-      "target": "es6",
+      "target": "ES2020",
       "module": "commonjs",
       "jsx": "react",
       "jsxFactory": "XNode.create",
@@ -14,7 +14,7 @@
       "esModuleInterop": true,
       "skipLibCheck": true,
       "lib": [
-        "es6"
+        "es6", "ES2020"
       ]
     },
     "include": [

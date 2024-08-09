@@ -1,9 +1,10 @@
 import { file } from "tmp-promise";
-import fetch from "node-fetch";
 import * as tmp from "tmp";
-import { createWriteStream, promises as fsp } from "fs";
+import { promises as fsp } from "fs";
 
 tmp.setGracefulCleanup();
+
+declare var fetch: any;
 
 
 export default class TempFileService {
