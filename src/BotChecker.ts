@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import robotsParser from "robots-parser";
 
 export default class BotChecker {

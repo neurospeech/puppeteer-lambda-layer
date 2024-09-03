@@ -1,5 +1,3 @@
-import fetch from "node-fetch";
-import { Page } from "puppeteer-core";
 import Command from "./Command";
 import BotChecker from "../BotChecker";
 import TempFileService from "../TempFileService";

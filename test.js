@@ -23,9 +23,9 @@ async function runTests() {
     //     pdf: {}
     // });
     await runAndLog({
-        url: "https://pitchfork.com/news/coachella-announces-dates-for-2024-festival/",
+        url: "https://www.youtube.com/watch?v=6emGENJyIIQ",
         preview: true,
-        botUserAgent: "Google-Bot/1.1"
+        botUserAgent: "Castyy-Bot/1.1"
     });
 }
 
