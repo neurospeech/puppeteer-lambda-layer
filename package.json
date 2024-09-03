@@ -12,7 +12,7 @@
   "dependencies": {
     "@azure/storage-blob": "^12.13.0",
     "@types/node": "^18.11.18",
-    "cheerio": "^1.0.0-rc.12",
+    "cheerio": "^1.0.0",
     "mime-types": "^2.1.35",
     "wrap-ansi": "^8.1.0",
     "puppeteer": "20.7.3",
