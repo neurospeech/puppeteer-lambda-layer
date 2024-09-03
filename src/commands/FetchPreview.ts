@@ -43,6 +43,8 @@ export default class FetchPreview extends Command {
 
         if (!url) {
             // we might need to process html using JSDOM
+            console.log(`URL not found in`);
+            console.log(content);
         }
 
         let title = $(`head > title`).text();
