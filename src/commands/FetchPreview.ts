@@ -1,7 +1,7 @@
 import Command from "./Command";
 import BotChecker from "../BotChecker";
 import TempFileService from "../TempFileService";
-import cheerio from "cheerio";
+import * as cheerio from "cheerio";
 import { IEvent } from "../IEvent";
 
 export default class FetchPreview extends Command {
