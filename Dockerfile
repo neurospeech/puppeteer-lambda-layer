@@ -54,7 +54,7 @@ COPY index.js ${FUNCTION_DIR}
 COPY node_modules ${FUNCTION_DIR}/node_modules
 COPY puppeteer-chromium ${FUNCTION_DIR}/puppeteer-chromium
 
-RUN cp /var/ffmpeg ${FUNCTION_DIR}/ffmpeg -r
+# RUN cp /var/ffmpeg ${FUNCTION_DIR}/ffmpeg -r
 
 WORKDIR ${FUNCTION_DIR}
 
