@@ -58,10 +58,6 @@ export default class FetchPreview extends Command {
 
         let url = $(`meta[property=og\\:image]`).attr("content");
         if (!url) {
-            url = $(`img`).attr("src");
-        }
-
-        if (!url) {
             // we might need to process html using JSDOM
             // console.log(`URL not found in`);
             // console.log(content);
