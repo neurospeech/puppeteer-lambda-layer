@@ -32,7 +32,7 @@ export default class FetchPreview extends Command {
         if (!canCrawl) {
             console.log("Bot denied succeeded");
         } else {
-            console.log("Bot check succeeded");
+            console.log(`Bot check succeeded for ${botUserAgent}`);
         }
 
         let { url, title, description } = this.parse(content);
