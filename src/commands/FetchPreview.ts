@@ -3,6 +3,7 @@ import BotChecker from "../BotChecker";
 import TempFileService from "../TempFileService";
 import * as cheerio from "cheerio";
 import { IEvent } from "../IEvent";
+import { JSDOM } from  "jsdom";
 
 export default class FetchPreview extends Command {
 
@@ -34,22 +35,11 @@ export default class FetchPreview extends Command {
             console.log("Bot check succeeded");
         }
 
-        const $ = cheerio.load(content);
-
-        let url = $(`meta[property=og\\:image]`).attr("content");
-        if (!url) {
-            url = $(`img`).attr("src");
-        }
+        let { url, title, description } = this.parse(content);
 
         if (!url) {
-            // we might need to process html using JSDOM
-            console.log(`URL not found in`);
-            console.log(content);
+            console.log(`Failed to load url`);
         }
-
-        let title = $(`head > title`).text();
-
-        let description = $(`meta[name=description]`).attr("content") || $(`meta[property=og\\:description]`).attr("content");
 
         const file = await TempFileService.getTempFile(".jpg");
         await TempFileService.fetch(url, file.path);
@@ -61,6 +51,38 @@ export default class FetchPreview extends Command {
                 title,
                 description
             };
+    }
+
+    private parse(content: string) {
+        const $ = cheerio.load(content);
+
+        let url = $(`meta[property=og\\:image]`).attr("content");
+        if (!url) {
+            url = $(`img`).attr("src");
+        }
+
+        if (!url) {
+            // we might need to process html using JSDOM
+            // console.log(`URL not found in`);
+            // console.log(content);
+            // // lets try JSDOM
+            return this.parseJSDOM(content);
+        }
+
+        let title = $(`head > title`).text();
+
+        let description = $(`meta[name=description]`).attr("content") || $(`meta[property=og\\:description]`).attr("content");
+        return { url, title, description };
+    }
+    parseJSDOM(content: string) {
+        const { window: { document } } = new JSDOM(content);
+        let url = document.querySelector(`meta[property="og:image"]`)?.getAttribute("content");
+        if (!url) {
+            url = document.querySelector("img")?.src;
+        }
+        const title = document.title;
+        const description = document.querySelector(`meta[name="description"]`)?.getAttribute("content");
+        return { url, title, description };
     }
 
     dispose(): Promise<void> {
