@@ -4,6 +4,7 @@ import TempFileService from "../TempFileService";
 import * as cheerio from "cheerio";
 import { IEvent } from "../IEvent";
 import { JSDOM } from  "jsdom";
+import { writeFile } from "fs/promises";
 
 export default class FetchPreview extends Command {
 
@@ -39,6 +40,14 @@ export default class FetchPreview extends Command {
 
         if (!url) {
             console.log(`Failed to load url`);
+
+            const htmlFile = await TempFileService.getTempFile(".html");
+            await writeFile(htmlFile.path, content, "utf8");
+    
+            await this.upload({ url: output , filePath: htmlFile.path});
+
+            throw new Error(`Failed to load url , saved content at ${output.split("?")[0]}`);
+    
         }
 
         const file = await TempFileService.getTempFile(".jpg");
