@@ -1,5 +1,5 @@
 import robotsParser from "robots-parser";
-
+import fetch from "node-fetch";
 export default class BotChecker {
 
     public static async check(url: string, userAgent: string, botCheck = false) {

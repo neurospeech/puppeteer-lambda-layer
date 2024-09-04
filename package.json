@@ -15,6 +15,7 @@
     "cheerio": "^1.0.0",
     "jsdom": "^25.0.0",
     "mime-types": "^2.1.35",
+    "node-fetch": "^2.7.0",
     "puppeteer": "20.7.3",
     "puppeteer-core": "^20.7.3",
     "puppeteer-screen-recorder": "3.0.3",
