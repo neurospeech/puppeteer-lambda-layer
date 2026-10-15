@@ -1,7 +1,7 @@
 ARG FUNCTION_DIR="/function"
 
 # Build Stage 1: Install aws-lambda-ric dependencies, npm install package.json dependencies
-FROM node:20-buster-slim
+FROM node:24-bookworm
 # Include global arg in this stage of the build
 ARG FUNCTION_DIR
 # AWS Lambda runtime dependencies

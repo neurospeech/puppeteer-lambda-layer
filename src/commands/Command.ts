@@ -1,5 +1,5 @@
-import { readFileSync, readdirSync, existsSync, promises } from "fs";
-import puppeteer, { Browser, Page } from "puppeteer-core";
+import { readdirSync, existsSync, promises } from "fs";
+import puppeteer, { Page } from "puppeteer-core";
 import { join } from "path";
 import * as mime from "mime-types";
 import { BlockBlobClient } from "@azure/storage-blob";
@@ -77,6 +77,7 @@ export interface ICommandInput {
 
 import { IEvent } from "../IEvent";
 import TempFileService from "../TempFileService";
+import uploadS3 from "./uploadS3";
 
 export default abstract class Command {
 
@@ -204,7 +205,6 @@ export default abstract class Command {
         console.log(`Waiting for pageReady till ${timeout}ms`);
         let start = Date.now();
         let end = start + timeout;
-        let isPageReady = false;
         for (let index = start; index < end; index += 1000) {
             await sleep(1000);
             if (await page.evaluate(stopTest)) {
@@ -239,7 +239,13 @@ export default abstract class Command {
             // use put...
             return this.uploadAzure(x);
         }
-        console.log(`File ${x.url} not supported for upload.`);
+        // upload directly..
+        console.log(`Uploading ${x.filePath} to ${x.url}`);
+        await uploadS3(x.url, x.filePath);
+
+        try {
+            await promises.unlink(x.filePath);
+        } catch {}
     }
 
     protected async uploadAzure({url, filePath}: ICommandInput) {
