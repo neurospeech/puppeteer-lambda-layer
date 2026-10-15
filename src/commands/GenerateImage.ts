@@ -1,5 +1,5 @@
 import { IEvent } from "../IEvent";
-import TempFileService from "../TempFileService";
+// import TempFileService from "../TempFileService";
 import Command from "./Command";
 
 export default class GenerateImage extends Command {

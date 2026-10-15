@@ -1,4 +1,4 @@
-import { BlobSASPermissions, BlobServiceClient, BlockBlobClient } from "@azure/storage-blob";
+import { BlobSASPermissions, BlobServiceClient } from "@azure/storage-blob";
 import Command from "./commands/Command";
 import FetchPreview from "./commands/FetchPreview";
 import GenerateImage from "./commands/GenerateImage";
