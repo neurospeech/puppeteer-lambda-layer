@@ -75,9 +75,9 @@ export interface ICommandInput {
     filePath: string;
 }
 
-import { IEvent } from "../IEvent";
-import TempFileService from "../TempFileService";
-import uploadS3 from "./uploadS3";
+import { IEvent } from "../IEvent.js";
+import TempFileService from "../TempFileService.js";
+import uploadS3 from "./uploadS3.js";
 
 export default abstract class Command {
 

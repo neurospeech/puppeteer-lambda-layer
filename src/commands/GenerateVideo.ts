@@ -1,6 +1,6 @@
-import { IEvent } from "../IEvent";
-import VideoRecorder from "../VideoRecorder";
-import Command from "./Command";
+import { IEvent } from "../IEvent.js";
+import VideoRecorder from "../VideoRecorder.js";
+import Command from "./Command.js";
 
 export default class GenerateVideo extends Command {
 

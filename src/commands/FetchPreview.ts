@@ -1,8 +1,8 @@
-import Command from "./Command";
-import BotChecker from "../BotChecker";
-import TempFileService from "../TempFileService";
+import Command from "./Command.js";
+import BotChecker from "../BotChecker.js";
+import TempFileService from "../TempFileService.js";
 import * as cheerio from "cheerio";
-import { IEvent } from "../IEvent";
+import { IEvent } from "../IEvent.js";
 import { JSDOM } from  "jsdom";
 import { writeFile } from "fs/promises";
 

@@ -1,6 +1,6 @@
-import { IEvent } from "../IEvent";
+import { IEvent } from "../IEvent.js";
 // import TempFileService from "../TempFileService";
-import Command from "./Command";
+import Command from "./Command.js";
 
 export default class GenerateImage extends Command {
     async render({ page, outputFile: path, output, quality = 95 }: IEvent) {

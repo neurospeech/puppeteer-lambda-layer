@@ -1,7 +1,7 @@
 import { writeFileSync } from "fs";
-import { IEvent } from "../IEvent";
-import Command from "./Command";
-import FlattenStyles from "./html/FlattenStyles";
+import { IEvent } from "../IEvent.js";
+import Command from "./Command.js";
+import FlattenStyles from "./html/FlattenStyles.js";
 import { Page } from "puppeteer-core";
 
 export default class GenerateHtml extends Command {

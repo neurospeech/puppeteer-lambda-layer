@@ -1,5 +1,5 @@
-import { IEvent } from "../IEvent";
-import Command from "./Command";
+import { IEvent } from "../IEvent.js";
+import Command from "./Command.js";
 
 export default class GeneratePDF extends Command {
     async render({ outputFile: path, page, output, pdf }: IEvent) {

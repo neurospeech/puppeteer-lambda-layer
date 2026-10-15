@@ -1,11 +1,11 @@
 import { BlobSASPermissions, BlobServiceClient } from "@azure/storage-blob";
-import Command from "./commands/Command";
-import FetchPreview from "./commands/FetchPreview";
-import GenerateImage from "./commands/GenerateImage";
-import GeneratePDF from "./commands/GeneratePDF";
-import GenerateVideo from "./commands/GenerateVideo";
-import { IEvent } from "./IEvent";
-import GenerateHtml from "./commands/GenerateHtml";
+import Command from "./commands/Command.js";
+import FetchPreview from "./commands/FetchPreview.js";
+import GenerateImage from "./commands/GenerateImage.js";
+import GeneratePDF from "./commands/GeneratePDF.js";
+import GenerateVideo from "./commands/GenerateVideo.js";
+import { IEvent } from "./IEvent.js";
+import GenerateHtml from "./commands/GenerateHtml.js";
 
 const asNumber = (n) => {
     if (n === void 0 || n === null || n === "null") {

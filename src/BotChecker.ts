@@ -1,5 +1,4 @@
 import robotsParser from "robots-parser";
-import fetch from "node-fetch";
 export default class BotChecker {
 
     public static async check(url: string, userAgent: string, botCheck = false) {
@@ -51,7 +50,7 @@ export default class BotChecker {
                 return true;
             }
             const text = await body.text();
-            const bot = robotsParser(robotsUrl, text);
+            const bot = (robotsParser as any)(robotsUrl, text);
             return bot.isAllowed(url, userAgent);
         } catch (ex) {
             console.log(ex);
